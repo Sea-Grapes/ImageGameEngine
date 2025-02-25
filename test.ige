@@ -1,12 +1,13 @@
 # set screen size
-B0 fe fe  # write to (fe, fe) coords
-00 ff 00  # set size to ff (256)
+TO|fe fe
+00 40 00
+TO|00 00
 
 # VAR:COORDS
 00 10 10
 
 B0 00 00  # draw pixel using coords on next line
-A1 00 02  # read coords
+A1 00 00  # read coords
 00 03 00
 ff ff ff  # pixel color
 
