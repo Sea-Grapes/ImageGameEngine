@@ -3,16 +3,12 @@ B0 fe fe  # write to (fe, fe) coords
 00 ff 00  # set size to ff (256)
 
 # VAR:COORDS
-A1 $10 $10  # store coords
+00 10 10
 
 B0 00 00  # draw pixel using coords on next line
-A0 00 02  # read coords
+A1 00 02  # read coords
+00 03 00
 ff ff ff  # pixel color
-
-2A 00 02  # starting add. write to coords
-A0 00 02  # get current coords
-00 01 00  # 1 in the x
-
 
 bb 00 00  # render everything
 40 00 00  # return to start
