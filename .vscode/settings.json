@@ -1,6 +1,15 @@
 {
   "files.exclude": {
     "__pycache__": true,
-    ".vscode": true
+    ".vscode": true,
+    ".gitignore": true,
+    "decompile.py": true,
+    "get_keycode.py": true,
+    "ige.md": true,
+    "randomness.py": true,
+    "README.md": true,
+    "requirements.txt": true,
+    "state.png": true,
+    "code.png": true
   }
 }
