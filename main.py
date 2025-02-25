@@ -139,7 +139,7 @@ class Environment:
 
 def draw_bleeding_rect(tleft, size, debug_color=(255, 255, 255)):
     "size is [w, h]"
-    width = 4
+    width = 1
     def do():
         pygame.draw.rect(screen, debug_color, [tleft[0]*4 + 2, 
                                         tleft[1]*4 + 2,
@@ -170,7 +170,7 @@ def blit(rects:list=[]):
     screen_tleft = env.space[255][254][1:]
     screen_size = env.space[254][254][1]
 
-    to_pygame_screen_size = (screen_size*4 + 4, screen_size*4 + 4)
+    to_pygame_screen_size = (screen_size*4, screen_size*4)
     if not forcefull and screen.get_size() != to_pygame_screen_size:
         screen = pygame.display.set_mode(to_pygame_screen_size)
         if screen_size != 0:
@@ -189,15 +189,15 @@ def blit(rects:list=[]):
     scaled_render = pygame.transform.scale(render, (1024, 1024))
     if not forcefull:
         screen.blit(scaled_render, tuple([
-            screen_tleft[0]-1024, screen_tleft[1]-1024
+            screen_tleft[0]*-4 + 1024, screen_tleft[1]*-4 + 1024
         ]))
         screen.blit(scaled_render, tuple([
-            screen_tleft[0], screen_tleft[1]-1024
+            screen_tleft[0]*-4, screen_tleft[1]*-4 + 1024
         ]))
         screen.blit(scaled_render, tuple([
-            screen_tleft[0]-1024, screen_tleft[1]
+            screen_tleft[0]*-4 + 1024, screen_tleft[1]*-4
         ]))
-        screen.blit(scaled_render, tuple(screen_tleft))
+        screen.blit(scaled_render, tuple([n*-4 for n in screen_tleft]))
     else:
         screen.blit(scaled_render, (0, 0))
 
@@ -213,6 +213,10 @@ def blit(rects:list=[]):
     
     for r in rects:
         r()
+
+    # control stuff
+    if speed is not None and not forcefull:
+        clock.tick(speed)
 
 pixel = [0, 0, 0]
 pointer = [0, 0]
@@ -390,9 +394,11 @@ while True:
             # pointer = env._get_address_offset(pointer, 1)
             # continue
 
-        case 0x2A | 0x2B | 0x2C: # ARITHMETIC
+        case 0x2A | 0x2B | 0x2C | 0x2D | 0x2E: # ARITHMETIC
             target = pixel[1:]
-            pointer = env._get_address_offset(pointer, 1)
+            padding = env.get_pixel(pointer, 1)[1]
+            padding_val = env.get_pixel(pointer, 1)[2]
+            pointer = env._get_address_offset(pointer, 2)
             val1, val2, offset = env.get_double_val(pointer)
             result = 0
             if pixel[0] == 0x2A:
@@ -401,18 +407,27 @@ while True:
             elif pixel[0] == 0x2B:
                 result = val1 * val2
 
-            # elif pixel[0] == 0x2C:
-            else:
+            elif pixel[0] == 0x2C:
                 if val2 == 0:
                     result = 0
                 else:
                     result = val1 // val2
+            elif pixel[0] == 0x2D:
+                result = val1 - val2
+                result = max(0, result)
+
+            else:
+                if val2 == 0:
+                    result = 0
+                else:
+                    result = val1 % val2
 
             try:
                 b_result = result.to_bytes((len(hex(result)[2:])//2))
             except OverflowError:
                 b_result = result.to_bytes((len(hex(result)[2:])//2)+1)
             b_result += b'\x00\x00\x00' # padding
+            b_result = (bytes([padding_val,]) * padding) + b_result
             for b in range(0, len(b_result)-3, 3):
                 print((int(b_result[b]), int(b_result[b+1]), int(b_result[b+2])))
                 env.set_pixel(env._get_address_offset(target, b//3), (int(b_result[b]), int(b_result[b+1]), int(b_result[b+2])))
@@ -425,7 +440,9 @@ while True:
 
         case 0x3A | 0x3B | 0x3C: # BITWISE
             target = pixel[1:]
-            pointer = env._get_address_offset(pointer, 1)
+            padding = env.get_pixel(pointer, 1)[1]
+            padding_val = env.get_pixel(pointer, 1)[2]
+            pointer = env._get_address_offset(pointer, 2)
             val1, val2, offset = env.get_double_val(pointer)
             result = 0
 
@@ -444,6 +461,7 @@ while True:
             except OverflowError:
                 b_result = result.to_bytes((len(hex(result)[2:])//2)+1)
             b_result += b'\x00\x00\x00' # padding
+            b_result = (bytes([padding_val,]) * padding) + b_result
             for b in range(0, len(b_result)-3, 3):
                 print((int(b_result[b]), int(b_result[b+1]), int(b_result[b+2])))
                 env.set_pixel(env._get_address_offset(target, b//3), (int(b_result[b]), int(b_result[b+1]), int(b_result[b+2])))
@@ -454,12 +472,11 @@ while True:
                 rects.append(draw_bleeding_rect([target[0]-2, target[1]-2], [4, len(b_result)//3 + 3], (0, 0, 0)))
             # continue
             
+        case 0x00:
+            ...
+            
         case _:
             print(f"Unrecognized opcode '{hex(pixel[0])}'")
-
-    # control stuff
-    if speed is not None:
-        clock.tick(speed)
 
     if forcefull:
         blit(rects)

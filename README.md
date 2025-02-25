@@ -51,6 +51,15 @@ Takes in a plaintext file that can be interpreted as ige code and generates the 
 ```
 It'll log to the console every instruction that gets written, and useful writer info when relevant. For how to write in this language, check out the [ige.md](./ige.md)
 
+### `decompile.py`
+Takes in an image and outputs all the pixels as a list of triple hex codes. If you find reading a bunch of assembly-like hex codes to understand a game, this could be fun for you. It could also be helpful in debugging.
+
+Takes two parameters:
+1. path to png
+2. output path
+
+The output is formatted as `address: code`. 
+
 # Instructions
 The list of instructions. They'll be written in hex (`0x00` to `0xFF`).
 
@@ -64,7 +73,7 @@ An underscore in the hex value means that value will change depending on the ins
 Not an instruction (does nothing). Should be used whenever this pixel is meant to be part of the parameter from the previous pixel (this prevents this pixel from being accidentally ran as an instruction)
 
 ## `0x50`: Offset
-Ignores the next `G_1` pixels. Should be used at the top of your screen in order to ensure that your screen isn't executed as code.
+Ignores the next `G_1` pixels. Jumping 0 pixels makes the pointer land on where it currently is, then re-executes the offset instruction, soft-locking the proram in an infinite loop. This is to say that, whatever the pointer lands on will be executed before the pointer continues to move.
 
 ## `0x40`: Goto
 Goes to the specified address.
@@ -98,7 +107,8 @@ Copies a singular pixel to another.
 - `G_2`, `B_2`: The target pixel.
 
 ## `0xD0`: Fill area
-- `G_1`, `B_1`: The top left corner of the data to copy.
+Fills a square/rectangular area with a singular color. This wraps; it starts at the "top left", and works its way down and to the right, wrapping around the screen (if needed) until it reaches the "bottom right". 
+- `G_1`, `B_1`: The top left corner of the square.
 - `G_2`, `B_2`: The bottom right corner of the data to copy.
 - `R_3`, `G_3`, `B_3`: The value to fill with.
 
@@ -130,15 +140,19 @@ Returns to the last executed "branch to" instruction. Or rather, it searches for
 ## `0x2_`: Arithmetic operators
 This will do arithmetic. The following pixels are treated either as value / variable mode pixels, save for the first parameters which are to know where to store the result.
 - `G_1`, `B_1`: Address of the result. Data will be written as concatenated RGB pixels.
+- `G_2`: Byte padding. Will add `G_2` of `B_2` bytes at the start. Is useful if you wanna store a result into the G or B of a pixel rather than the R.
 
 Arithmetic operators are:
 - `0x2A`: Add
 - `0x2B`: Multiply
-- `0x2C`: Euclidean division (divisions by 0 return 0) [DEFAULT]
+- `0x2C`: Euclidean division (val1 / val2) (divisions by 0 returns 0)
+- `0x2D`: Subtraction (val1 - val2) (results smaller than 0 returns 0)
+- `0x2E`: Modulo operator (val1 % val2) (modulo by 0 returns 0) [DEFAULT]
 
 ## `0x3_`: Bitwise operators
 Works the same as arithmetic operators, but does bitwise operations instead.
 - `G_1`, `B_1`: Address of the result. Data will be written as concatenated RGB pixels.
+- `G_2`: Byte padding. Will add `G_2` of `B_2` bytes at the start. Is useful if you wanna store a result into the G or B of a pixel rather than the R.
 
 Bitwise operations are:
 - `0x3A`: Logical AND
