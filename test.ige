@@ -1,10 +1,15 @@
-# fill
+# set screen size
+B0 fe fe  # write to (fe, fe) coords
+00 ff 00  # set size to ff (256)
+
+A1 $10 $10  # store coords
+
+
+
+# fill rect
 D0 $40 $40
 00 $128 $128
 ab cd ef
-
-B0 fe fe
-00 ff 00
 
 # render and return
 bb 00 00
