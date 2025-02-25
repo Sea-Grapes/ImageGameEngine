@@ -3,14 +3,15 @@ TO|fe fe
 00 256 256
 TO|00 00
 
+# clear the screen
+D0 01 00
+00 ff 40
+00 00 00
+
 # variable for pixel pos
 LABEL|pixel_pos
 TO| X Y-
 00 10 10
-
-D0 01 00
-00 ff 40
-00 00 00
 
 
 3C L:WRITE   # OR, writes to L:WRITE pixel
