@@ -4,12 +4,28 @@ TO|fe fe
 TO|00 00
 
 # VAR:COORDS
-10 10 00
+00 10 10
 
-B0 00 00  # draw pixel using coords on next line
-A1 00 00
-00 02 00
-ff ff ff  # pixel color
+3C L:WRITE   # OR, writes to L:WRITE pixel
+  00 00 00    # no padding
+
+  A0 03 00    # VAL mode: read next 3 pixels
+  B0 00 00    # Combine with B0 command
+
+  A1 00 00    # VAR mode: read value of coords
+  00 03 00    # Read 3 hexs (r, g, and b values) of coords pixel
+
+LABEL|WRITE  # This is a pixel for storing the write command, which is set by the OR
+ff ff ff    # pixel color (parameter of the write function once it is put into place)
+
+2A 00 00  # ADD, writes to VAR:COORDS
+  00 01 00
+  
+  A1 00 00  # VAR mode: get current value of coords
+  00 03 00  # 3 hexs log
+
+  A0 03 00  # VAL mode: read next 3 pixels
+  00 01 00  # 1 in the x dir
 
 bb 00 00  # render everything
 40 00 00  # return to start
