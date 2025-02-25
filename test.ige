@@ -1,6 +1,6 @@
 # set screen size
 TO|fe fe
-00 40 00
+00 256 256
 TO|00 00
 
 # VAR:COORDS
