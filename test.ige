@@ -4,11 +4,11 @@ TO|fe fe
 TO|00 00
 
 # VAR:COORDS
-00 10 10
+10 10 00
 
 B0 00 00  # draw pixel using coords on next line
-A1 00 00  # read coords
-00 03 00
+A1 00 00
+00 02 00
 ff ff ff  # pixel color
 
 bb 00 00  # render everything
