@@ -3,9 +3,10 @@ TO|fe fe
 00 256 256
 TO|00 00
 
-# VAR:COORDS
+# variable for pixel pos
+LABEL|pixel_pos
+TO| X Y-
 00 10 10
-
 
 D0 01 00
 00 ff 40
@@ -18,17 +19,17 @@ D0 01 00
   A0 03 00    # VAL mode: read next 3 pixels
   B0 00 00    # Combine with B0 command
 
-  A1 00 00    # VAR mode: read value of coords
+  A1 L:pixel_pos  # VAR mode: read value of pixel_pos
   00 03 00    # Read 3 hexs (r, g, and b values) of coords pixel
 
 LABEL|WRITE  # This is a pixel for storing the write command, which is set by the OR
 ff ff ff    # pixel color (parameter of the write function once it is put into place)
 
-2A 00 00  # ADD, writes to VAR:COORDS
+2A L:pixel_pos  # ADD, writes to pixel_pos
   00 01 00  # need 1 padding because add writes from the left
   
-  A1 00 00  # VAR mode: get current value of coords
-  00 03 00  # 3 hexs log
+  A1 L:pixel_pos  # VAR mode: get current value of coords
+  00 03 00   # 3 hexs log
 
   A0 03 00  # VAL mode: read next 3 pixels
   00 01 00  # 1 in the x dir
