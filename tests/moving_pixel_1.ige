@@ -6,12 +6,6 @@ TO|00 00
 # VAR:COORDS
 00 10 10
 
-
-D0 01 00
-00 ff 40
-00 00 00
-
-
 3C L:WRITE   # OR, writes to L:WRITE pixel
   00 00 00    # no padding
 
