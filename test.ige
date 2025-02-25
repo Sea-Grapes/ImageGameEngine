@@ -1,0 +1,11 @@
+# fill
+D0 $40 $40
+00 $128 $128
+ab cd ef
+
+B0 fe fe
+00 ff 00
+
+# render and return
+bb 00 00
+40 00 00

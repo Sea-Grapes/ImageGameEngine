@@ -1,0 +1,8 @@
+# fill
+D0 $40 $40
+00 $128 $128
+ab cd ef
+
+# render and end
+bb 00 00
+40 00 00
