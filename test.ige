@@ -1,9 +1,13 @@
 # set screen size
 TO|fe fe
-00 256 256
+00 $40 00
+
+# offset screen position
+TO|ff fe
+00 01 00
 TO|00 00
 
-# clear the screen
+# fill screen with black to clear
 D0 01 00
 00 $40 $40
 00 00 00
@@ -11,7 +15,7 @@ D0 01 00
 # variable for pixel pos
 LABEL|pixel_pos
 TO| X Y-
-00 10 10
+00 01 $20
 
 
 3C L:WRITE   # OR, writes to L:WRITE pixel

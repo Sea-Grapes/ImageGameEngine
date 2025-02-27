@@ -8,8 +8,6 @@
     "ige.md": true,
     "randomness.py": true,
     "README.md": true,
-    "requirements.txt": true,
-    "state.png": true,
-    "code.png": true
+    "requirements.txt": true
   }
 }
