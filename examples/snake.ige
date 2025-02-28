@@ -8,7 +8,8 @@ TO|FF FE
 FILL|00 00|40 00|40 41 41 # prevent running screen as code
 FILL|00 FF|FF FF|00 00 00 # clear call stack
 
-FILL|41 41|50 50|00 00 00
+FILL|41 41|50 50|00 00 00 # clear code area
+FILL|FE 00|FE FD|00 00 00 # clear body stack
 
 # VAR:HEAD_POS at FF 00
 TO|FF 00
@@ -22,8 +23,6 @@ TO|FE 00
 
 TO|FE FC # since the body is stored as a series of write instructions, go back
 40 L:after_draw
-
-
 # everything FE 01 and below is body position values
 
 # main loop
@@ -33,7 +32,7 @@ TO|41 41
     00 40 40
     00 00 00
 
-    # do the same to draw the apple
+    # draw the apple using a sneaky OR with a write instruction
     3C L:APPLE_WRITE
     00 00 00
     A0 03 00
@@ -43,8 +42,8 @@ TO|41 41
     LABEL|APPLE_WRITE
     69 0D 0D # apple color
 
-    1A L:not_eaten # IF head and apple are in same spot
-    00 42 41
+    1A L:not_eaten # IF head and apple are (not) in same spot
+    00 42 41 # 42 41 is where I put the function for eating an apple
     A1 FF 00 # head pos
     00 03 00
     A1 FF 01 # apple pos
@@ -88,6 +87,18 @@ TO|41 41
 
     # the body
     # copy the current head position to top of list
+    # we run into a problem since we're doing this *before* drawing the head
+    # the value at L:HEAD_WRITE is some random instruction on the first loop
+    # I don't wanna overcomplicate this, so I'll first AND it with a write instruction
+    # that way even it now becomes a random write to 00 00, which we never jump back to
+    3A L:HEAD_WRITE
+    00 00 00
+    A0 03 00
+    B0 FF FF
+    A1 L:HEAD_WRITE
+    00 03 00
+
+    # now we do the copy
     CA L:HEAD_WRITE
     00 FE FA
     B0 FE FB
@@ -96,11 +107,11 @@ TO|41 41
     # to draw the body, we just jump to FE 01, since the body
     # is stored as a series of write instructions
     40 FE 01
-    LABEL|after_draw
+    LABEL|after_draw # useful return point
     TO| X Y-
 
     # we draw the head after the body so that we can see it
-    # OR the value of the head with a write instruction
+    # use the same sneaky apple trick as earlier
     3C L:HEAD_WRITE
     00 00 00
     A0 03 00
@@ -131,7 +142,7 @@ TO|41 41
     40 46 41
     50 03 00
 
-    LABEL|after_move
+    LABEL|after_move # useful return point (again)
     TO| X Y-
 
     # blit
@@ -140,9 +151,11 @@ TO|41 41
     # return to start of loop
     40 41 41
 
-# func:increase body length
+# function for eating an apple
 TO|42 41
     # add to length of body
+    # length of body is stored at FE 00
+    # so we do whatever is at FE 00 + 1 and store it at FE 00
     2A FE 00
     00 00 00
     A1 FE 00
@@ -151,6 +164,7 @@ TO|42 41
     01 00 00
 
     # move apple
+    # pretty arbitrary number, but creates good "random" movement after the modulo
     2A E1 00
     00 01 00
     A1 FF 01
@@ -194,7 +208,7 @@ TO|42 41
     # return (with a goto instruction) to main loop
     40 L:not_eaten
 
-#funcs: move body
+# move body functions
 TO|43 41
     # up 
     2D FF 00
@@ -220,8 +234,9 @@ TO|44 41
 
 TO|45 41
     # down
-    # down and right are the easiest, just add 1 / hex 100
-    # plus, for fun, we don't care about wrapping :D
+    # for fun, we don't care about wrapping :D
+    # the reason I'm saying this is fun is because that means the snake can sneakily enter the game code, and start overwriting a bunch of useful data.
+    # this usually ends up in a softlock, but it's still fun nonetheless.
     2A FF 00
     00 01 00
     A1 FF 00

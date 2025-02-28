@@ -67,14 +67,15 @@ class Environment:
         Assumes that the address is the 0xA0 pixel."""
         pixel = self.get_pixel(address)
         length = pixel[1]
-        return self.get_variable(self._get_address_offset(address, 1), length)
+        offset = pixel[2]
+        return self.get_variable(self._get_address_offset(address, 1), length, offset)
     
-    def get_variable(self, address, length) -> int:
+    def get_variable(self, address, length, offset) -> int:
         """Returns the concatenation of the given pixel as bytes.
         Assumes that the address is the pixel pointed to by the 0xA1 pixel."""
         value = b''
         for o in range(-(length//-3)):
-            value += bytes([x for x in self.get_pixel(address, o)])
+            value += bytes([x for x in self.get_pixel(address, o + offset)])
         
         # some extra bytes from the pixel were included
         # this is annoying, eally annoying because that means that an arithmetic instruction stores a result of 1 like this:
@@ -100,7 +101,8 @@ class Environment:
         elif pixel[0] == 0xA1: # VARIABLE mode
             target = pixel[1:]
             length = self.get_pixel(address, 1)[1]
-            return self.get_variable(target, length)
+            offset = self.get_pixel(address, 1)[2]
+            return self.get_variable(target, length, offset)
         
         return 0
 
@@ -172,11 +174,13 @@ def blit(rects:list=[]):
 
     to_pygame_screen_size = (screen_size*4, screen_size*4)
     if not forcefull and screen.get_size() != to_pygame_screen_size:
-        screen = pygame.display.set_mode(to_pygame_screen_size)
         if screen_size != 0:
+            screen = pygame.display.set_mode(to_pygame_screen_size)
             print(f"Detected size change -> {screen.get_size()} -> {screen_size}")
         else:
             print("Screensize is 0, not blitting.")
+            if screen.get_size() != (1, 1):
+                screen = pygame.display.set_mode((1, 1))
             return
 
     if forcefull:
@@ -215,8 +219,10 @@ def blit(rects:list=[]):
         r()
 
     # control stuff
-    if speed is not None and not forcefull:
+    if speed is not None:
         clock.tick(speed)
+    
+    pygame.display.flip()
 
 pixel = [0, 0, 0]
 pointer = [0, 0]
@@ -255,10 +261,12 @@ while True:
         # VALUE / VARIABLE mode: we need to skip forward accordingly
         case 0xA0 | 0xA1:
             if pixel[0] & 0x01 == 0x00: # VALUE mode
-                pointer[1] += pixel[1]
+                pointer[1] += -(pixel[1] // -3)
             
             elif pixel[0] & 0x01 == 0x01: # VARIABLE mode
                 pointer[1] += 1
+            
+            pointer = env._get_address_offset(pointer, 0) # properly wrap
 
             print("Value / variable instruction, ignoring")
 
@@ -279,27 +287,38 @@ while True:
             target = env.get_pixel(pointer, 2)[1:]
 
             vert_offset = (256 if top_left[1] > bottom_right[1] else 0)
-            horiz_offfset = (256 if top_left[0] > bottom_right[0] else 0)
+            horiz_offset = (256 if top_left[0] > bottom_right[0] else 0)
 
             if showpointer and forcefull:
                 # source rect
                 rects.append(draw_bleeding_rect(top_left, [
-                    (bottom_right[0] + horiz_offfset) - top_left[0],
+                    (bottom_right[0] + horiz_offset) - top_left[0],
                     (bottom_right[1] + vert_offset) - top_left[1],
                 ], (0, 255, 0)))
                 # target rect
                 rects.append(draw_bleeding_rect(target, [
-                    (bottom_right[0] + horiz_offfset) - top_left[0],
+                    (bottom_right[0] + horiz_offset) - top_left[0],
                     (bottom_right[1] + vert_offset) - top_left[1],
                 ], (255, 0, 0)))
 
             print(f"Copy area instruction, copied from {top_left} to {bottom_right} to {target}")
             pointer = env._get_address_offset(pointer, 2)
             
-            for y in range(bottom_right[1] + vert_offset - top_left[1]+1):
-                for x in range(bottom_right[0] + horiz_offfset - top_left[0]+1):
-                    fetch_val = env.get_pixel([(x + top_left[0])%256, (y + top_left[1])%256])
-                    env.set_pixel([(x+target[0])%256, (y+target[1])%256], fetch_val)
+            # Thank you ChatGPT for this one
+            # Calculate the source area with wrapping
+            src_x = np.arange(top_left[0], bottom_right[0] + horiz_offset + 1) % 256
+            src_y = np.arange(top_left[1], bottom_right[1] + vert_offset + 1) % 256
+            src_xx, src_yy = np.meshgrid(src_x, src_y)
+            src_indices = np.stack([src_xx.ravel(), src_yy.ravel()], axis=-1)
+
+            # Calculate the target area with wrapping
+            tgt_x = (src_indices[:, 0] - top_left[0] + target[0]) % 256
+            tgt_y = (src_indices[:, 1] - top_left[1] + target[1]) % 256
+            tgt_indices = np.stack([tgt_x, tgt_y], axis=-1)
+
+            # Copy the pixels
+            for src, tgt in zip(src_indices, tgt_indices):
+                env.set_pixel(tgt.tolist(), env.get_pixel(src.tolist()))
         
         
         case 0xD0: # FILL AREA
@@ -308,14 +327,18 @@ while True:
             target = env.get_pixel(pointer, 2)
 
             vert_offset = (256 if top_left[1] > bottom_right[1] else 0)
-            horiz_offfset = (256 if top_left[0] > bottom_right[0] else 0)
+            horiz_offset = (256 if top_left[0] > bottom_right[0] else 0)
 
-            for y in range(bottom_right[1] + vert_offset - top_left[1]):
-                for x in range(bottom_right[0] + horiz_offfset - top_left[0]):
-                    env.set_pixel(
-                        [(x+top_left[0])%256, (y+top_left[1])%256],
-                        target
-                    )
+            # once again, thank you ChatGPT
+            # Calculate the source area with wrapping
+            src_x = np.arange(top_left[0], bottom_right[0] + horiz_offset + 1) % 256
+            src_y = np.arange(top_left[1], bottom_right[1] + vert_offset + 1) % 256
+            src_xx, src_yy = np.meshgrid(src_x, src_y)
+            src_indices = np.stack([src_xx.ravel(), src_yy.ravel()], axis=-1)
+
+            # Fill the target area
+            for src in src_indices:
+                env.set_pixel(src.tolist(), target)
         
             print(f"Fill area instruction, filled {top_left} to {bottom_right} with {target}")
             pointer = env._get_address_offset(pointer, 2)
@@ -429,7 +452,6 @@ while True:
             b_result += b'\x00\x00\x00' # padding
             b_result = (bytes([padding_val,]) * padding) + b_result
             for b in range(0, len(b_result)-3, 3):
-                print((int(b_result[b]), int(b_result[b+1]), int(b_result[b+2])))
                 env.set_pixel(env._get_address_offset(target, b//3), (int(b_result[b]), int(b_result[b+1]), int(b_result[b+2])))
             
             pointer = env._get_address_offset(pointer, offset-1)
@@ -463,7 +485,6 @@ while True:
             b_result += b'\x00\x00\x00' # padding
             b_result = (bytes([padding_val,]) * padding) + b_result
             for b in range(0, len(b_result)-3, 3):
-                print((int(b_result[b]), int(b_result[b+1]), int(b_result[b+2])))
                 env.set_pixel(env._get_address_offset(target, b//3), (int(b_result[b]), int(b_result[b+1]), int(b_result[b+2])))
             
             pointer = env._get_address_offset(pointer, offset-1)
@@ -481,7 +502,7 @@ while True:
     if forcefull:
         blit(rects)
 
-    pygame.display.flip()
+    # pygame.display.flip()
 
     stop = True
     for event in pygame.event.get():
@@ -503,9 +524,13 @@ while True:
         while True:
             event = pygame.event.wait()
             if event.type == pygame.QUIT:
-                sys.exit()
+                stop = True
+                break
             elif event.type == pygame.KEYDOWN and event.key == pygame.key.key_code("]") or event.type == pygame.TEXTINPUT and event.text == ']':
                 break
+    
+    if stop:
+        break
     
     # increment pointer
     pointer = env._get_address_offset(pointer, 1)
