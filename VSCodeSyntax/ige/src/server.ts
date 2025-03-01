@@ -29,7 +29,7 @@ ws.onCompletion((data) => {
     {
       label: '40',
       kind: CompletionItemKind.Function,
-      detail: '(method) 0x40 Goto function',
+      detail: '(method) \`0x40\` Goto function',
       documentation: {
         kind: MarkupKind.Markdown,
         value: `Goes to the specified address.\n`
