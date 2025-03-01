@@ -1,5 +1,5 @@
 import { TextDocument } from 'vscode-languageserver-textdocument'
-import { CompletionItem, CompletionItemKind, createConnection, InitializeResult, MarkupKind, ProposedFeatures, TextDocuments, TextDocumentSyncKind } from 'vscode-languageserver/node'
+import { CompletionItem, CompletionItemKind, CompletionParams, createConnection, InitializeResult, InsertTextFormat, MarkupKind, ProposedFeatures, TextDocuments, TextDocumentSyncKind } from 'vscode-languageserver/node'
 import * as fs from 'fs'
 import * as path from 'path'
 
@@ -18,16 +18,37 @@ ws.onInitialize((): InitializeResult => {
   }
 })
 
-ws.onCompletion(() => {
+ws.onCompletion((data) => {
+
   return [
     {
-      label: 'D0',
+      label: '40',
       kind: CompletionItemKind.Function,
+      detail: '(method) 0x40 Goto function',
       documentation: {
         kind: MarkupKind.Markdown,
-        value: 'This is a test adding markdown'
+        value: `Goes to the specified address.\n`
       },
-      detail: 'Fill area'
+      insertTextFormat: InsertTextFormat.Snippet,
+      insertText: "D0 ${1:00} ${2:00}"
+    },
+    {
+      label: 'A0',
+      kind: CompletionItemKind.Function,
+      detail: 'Value mode',
+      documentation: {
+        kind: MarkupKind.Markdown,
+        value: 'Todo'
+      },
+    },
+    {
+      label: 'A1',
+      kind: CompletionItemKind.Function,
+      detail: 'Variable mode',
+      documentation: {
+        kind: MarkupKind.Markdown,
+        value: 'Todo'
+      }
     }
   ]
 })
@@ -36,26 +57,26 @@ ws.onCompletionResolve((item: CompletionItem) => {
   return item
 })
 
-ws.onSignatureHelp(() => {
-  return {
-    signatures: [
-      {
-        label: '40',
-        documentation: 'this is a test',
-        parameters: [
-          {
-            label: 'x',
-            documentation: 'x coordinate'
-          },
-          {
-            label: 'y',
-            documentation: 'y coordinate'
-          }
-        ]
-      }
-    ]
-  }
-})
+// ws.onSignatureHelp(() => {
+//   return {
+//     signatures: [
+//       {
+//         label: '40',
+//         documentation: 'this is a test',
+//         parameters: [
+//           {
+//             label: 'x',
+//             documentation: 'x coordinate'
+//           },
+//           {
+//             label: 'y',
+//             documentation: 'y coordinate'
+//           }
+//         ]
+//       }
+//     ]
+//   }
+// })
 
 documents.listen(ws)
 ws.listen()
