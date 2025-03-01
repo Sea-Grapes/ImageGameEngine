@@ -10,18 +10,33 @@
     "Programming Languages"
   ],
   "contributes": {
-    "languages": [{
-      "id": "ige",
-      "aliases": ["ImageGameEngine", "ige"],
-      "extensions": [".ige"],
-      "configuration": "./language-configuration.json"
-    }],
-    "grammars": [{
-      "language": "ige",
-      "scopeName": "source.ige",
-      "path": "./syntaxes/ige.tmLanguage.json"
-    }]
+    "languages": [
+      {
+        "id": "ige",
+        "aliases": [
+          "ImageGameEngine",
+          "ige"
+        ],
+        "extensions": [
+          ".ige"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "ige",
+        "scopeName": "source.ige",
+        "path": "./syntaxes/ige.tmLanguage.json"
+      }
+    ]
   },
-  "main": "src/extension.js",
-  "type": "module"
+  "main": "out/extension.ts",
+  "type": "module",
+  "scripts": {
+    "vscode:prepublish": "tsc -b"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.97.0"
+  }
 }

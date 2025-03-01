@@ -2,5 +2,9 @@ __pycache__
 venv
 state.png
 code.png
-# .vscode
+
+#.vscode
 .vscodeignore
+
+# extension
+node_modules
