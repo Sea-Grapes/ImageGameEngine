@@ -8,28 +8,28 @@ ws.onInitialize(() => {
     return {
         capabilities: {
             textDocumentSync: node_1.TextDocumentSyncKind.Incremental,
-            // completionProvider: {
-            //   resolveProvider: true
-            // }
+            completionProvider: {
+                resolveProvider: true
+            }
         }
     };
 });
-// ws.onCompletion(() => {
-//   return [
-//     {
-//       label: 'D0',
-//       kind: CompletionItemKind.Function,
-//       documentation: {
-//         kind: MarkupKind.Markdown,
-//         value: 'This is a test adding markdown'
-//       },
-//       detail: 'Fill area'
-//     }
-//   ]
-// })
-// ws.onCompletionResolve((item: CompletionItem) => {
-//   return item
-// })
+ws.onCompletion(() => {
+    return [
+        {
+            label: 'D0',
+            kind: node_1.CompletionItemKind.Function,
+            documentation: {
+                kind: node_1.MarkupKind.Markdown,
+                value: 'This is a test adding markdown'
+            },
+            detail: 'Fill area'
+        }
+    ];
+});
+ws.onCompletionResolve((item) => {
+    return item;
+});
 ws.onSignatureHelp(() => {
     return {
         signatures: [
