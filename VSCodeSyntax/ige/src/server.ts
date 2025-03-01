@@ -1,5 +1,7 @@
 import { TextDocument } from 'vscode-languageserver-textdocument'
 import { CompletionItem, CompletionItemKind, createConnection, InitializeResult, MarkupKind, ProposedFeatures, TextDocuments, TextDocumentSyncKind } from 'vscode-languageserver/node'
+import * as fs from 'fs'
+import * as path from 'path'
 
 const ws = createConnection(ProposedFeatures.all)
 
