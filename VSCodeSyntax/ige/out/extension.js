@@ -19,6 +19,7 @@ function activate(context) {
         synchronize: { fileEvents: vscode_1.workspace.createFileSystemWatcher('**/*.ige') }
     };
     client = new node_1.LanguageClient('ige', serverOptions, clientOptions);
+    // languages.setLanguageConfiguration('ige', { wordPattern: /[\S]+/})
     client.start();
 }
 function deactivate() {

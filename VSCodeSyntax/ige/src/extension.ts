@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { workspace, ExtensionContext, window } from 'vscode'
+import { workspace, ExtensionContext, window, languages } from 'vscode'
 
 import {
   LanguageClient,
@@ -27,6 +27,8 @@ export function activate(context: ExtensionContext) {
   }
 
   client = new LanguageClient('ige', serverOptions, clientOptions)
+
+  // languages.setLanguageConfiguration('ige', { wordPattern: /[\S]+/})
 
   client.start()
 }

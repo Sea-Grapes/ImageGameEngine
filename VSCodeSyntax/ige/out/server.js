@@ -3,15 +3,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_languageserver_textdocument_1 = require("vscode-languageserver-textdocument");
 const node_1 = require("vscode-languageserver/node");
 const ws = (0, node_1.createConnection)(node_1.ProposedFeatures.all);
-ws.console.log('test1');
-console.log('test2');
 const documents = new node_1.TextDocuments(vscode_languageserver_textdocument_1.TextDocument);
 ws.onInitialize(() => {
     return {
         capabilities: {
             textDocumentSync: node_1.TextDocumentSyncKind.Incremental,
             completionProvider: {
-                resolveProvider: true
+                resolveProvider: true,
+                // hacky fix to allow number commands, because wordpattern wasn't working
+                triggerCharacters: Array.from({ length: 10 }, (v, i) => i.toString())
             }
         }
     };

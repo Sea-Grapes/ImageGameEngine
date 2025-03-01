@@ -12,7 +12,9 @@ ws.onInitialize((): InitializeResult => {
     capabilities: {
       textDocumentSync: TextDocumentSyncKind.Incremental,
       completionProvider: {
-        resolveProvider: true
+        resolveProvider: true,
+        // hacky fix to allow number commands, because wordpattern wasn't working
+        triggerCharacters: Array.from({length: 10}, (v, i) => i.toString())
       }
     }
   }
