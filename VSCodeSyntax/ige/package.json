@@ -36,6 +36,11 @@
     "vscode:prepublish": "tsc -b"
   },
   "devDependencies": {
+    "@types/node": "^22.13.7",
     "@types/vscode": "^1.97.0"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1",
+    "vscode-languageserver": "^9.0.1"
   }
 }
