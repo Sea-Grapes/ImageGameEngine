@@ -15,7 +15,10 @@ ws.onInitialize((): InitializeResult => {
         resolveProvider: true,
         // hacky fix to allow number commands, because wordpattern wasn't working
         triggerCharacters: Array.from({length: 10}, (v, i) => i.toString())
-      }
+      },
+      // signatureHelpProvider: {
+      //   triggerCharacters: [' ']
+      // }
     }
   }
 })
@@ -32,7 +35,7 @@ ws.onCompletion((data) => {
         value: `Goes to the specified address.\n`
       },
       insertTextFormat: InsertTextFormat.Snippet,
-      insertText: "D0 ${1:00} ${2:00}"
+      insertText: "40 ${1:00} ${2:00}"
     },
     {
       label: 'A0',
@@ -59,26 +62,26 @@ ws.onCompletionResolve((item: CompletionItem) => {
   return item
 })
 
-// ws.onSignatureHelp(() => {
-//   return {
-//     signatures: [
-//       {
-//         label: '40',
-//         documentation: 'this is a test',
-//         parameters: [
-//           {
-//             label: 'x',
-//             documentation: 'x coordinate'
-//           },
-//           {
-//             label: 'y',
-//             documentation: 'y coordinate'
-//           }
-//         ]
-//       }
-//     ]
-//   }
-// })
+ws.onSignatureHelp(() => {
+  return {
+    signatures: [
+      {
+        label: '40',
+        documentation: 'this is a test',
+        parameters: [
+          {
+            label: 'x',
+            documentation: 'x coordinate'
+          },
+          {
+            label: 'y',
+            documentation: 'y coordinate'
+          }
+        ]
+      }
+    ]
+  }
+})
 
 documents.listen(ws)
 ws.listen()
