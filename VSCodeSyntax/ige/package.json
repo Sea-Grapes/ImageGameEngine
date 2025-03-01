@@ -31,8 +31,7 @@
       }
     ]
   },
-  "main": "out/extension.ts",
-  "type": "module",
+  "main": "out/extension.js",
   "scripts": {
     "vscode:prepublish": "tsc -b"
   },

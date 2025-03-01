@@ -9,9 +9,11 @@
 			"name": "Extension",
 			"type": "extensionHost",
 			"request": "launch",
+      "preLaunchTask": "tsc: watch - tsconfig.json",
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}"
 			]
+      
 		}
 	]
 }
