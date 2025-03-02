@@ -20,6 +20,7 @@ function activate(context) {
     };
     client = new node_1.LanguageClient('ige', serverOptions, clientOptions);
     // languages.setLanguageConfiguration('ige', { wordPattern: /[\S]+/})
+    // commands.executeCommand('editor.action.triggerParameterHints');
     client.start();
 }
 function deactivate() {

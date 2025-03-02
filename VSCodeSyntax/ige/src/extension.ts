@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { workspace, ExtensionContext, window, languages } from 'vscode'
+import { workspace, ExtensionContext, window, languages, commands } from 'vscode'
 
 import {
   LanguageClient,
@@ -29,6 +29,8 @@ export function activate(context: ExtensionContext) {
   client = new LanguageClient('ige', serverOptions, clientOptions)
 
   // languages.setLanguageConfiguration('ige', { wordPattern: /[\S]+/})
+
+  // commands.executeCommand('editor.action.triggerParameterHints');
 
   client.start()
 }
