@@ -1,9 +1,12 @@
 import { TextDocument } from 'vscode-languageserver-textdocument'
-import { CompletionItem, CompletionItemKind, CompletionParams, createConnection, InitializeResult, InsertTextFormat, MarkupKind, ProposedFeatures, TextDocuments, TextDocumentSyncKind } from 'vscode-languageserver/node'
+import { CompletionItem, CompletionItemKind, CompletionParams, createConnection, InitializeResult, InsertTextFormat, MarkupKind, ProposedFeatures, SignatureHelpParams, TextDocuments, TextDocumentSyncKind } from 'vscode-languageserver/node'
 import * as fs from 'fs'
 import * as path from 'path'
 
 const ws = createConnection(ProposedFeatures.all)
+
+console.log('HELLO')
+ws.console.log('HELLO')
 
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument)
 
@@ -81,7 +84,10 @@ ws.onCompletionResolve((item: CompletionItem) => {
   return item
 })
 
-ws.onSignatureHelp(() => {
+ws.onSignatureHelp((params: SignatureHelpParams) => {
+
+  console.log(params)
+
   return {
     signatures: [
       {

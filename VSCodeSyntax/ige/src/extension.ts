@@ -29,11 +29,13 @@ export function activate(context: ExtensionContext) {
   client = new LanguageClient('ige', serverOptions, clientOptions)
   client.start()
 
-  console.log('test')
+  console.log('Language client activated')
+
+  // console.log('test')
   let lastLine = -1
 
   window.onDidChangeTextEditorSelection(event => {
-    console.log('SELECTION CHANGE')
+    // console.log('SELECTION CHANGE')
     const currentLine = event.textEditor.selection.active.line
 
     if(currentLine !== lastLine) commands.executeCommand('closeParameterHints')
