@@ -1,0 +1,5 @@
+'40':
+  title: '(method) 0x40: Goto function'
+  
+  # default values, you don't have to set these
+  docs: '@40'
