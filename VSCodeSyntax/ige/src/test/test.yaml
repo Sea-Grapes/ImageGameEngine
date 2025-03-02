@@ -1,4 +1,16 @@
-func: 40
-completion:
-  '(method) 0x40: Goto function' # optional, shown before completion is entered
-signature_title: 
+# an experiental config
+# probably needs restructuring
+
+
+'40':
+  completion:
+    title: '(method) 0x40: Goto function' # default title
+    docs: '@var_ref'                      # optional, specify position in md file. defaults to @40
+    docs: 'example plaintext docs'        # if you don't want markup you can use plaintext
+    insertText: '40 ${1:00} ${2:00}'         # snippet for insertion
+  
+  parameters:
+    x: 'x coordinate'
+    y: 'y coordinate'
+
+  # ...(other config values possibly)
