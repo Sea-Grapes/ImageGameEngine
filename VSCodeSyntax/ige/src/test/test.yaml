@@ -9,6 +9,7 @@
     docs: 'example plaintext docs'        # if you don't want markup you can use plaintext
     insertText: '40 ${1:00} ${2:00}'         # snippet for insertion
   
+  # probably used for parameters on the same line
   parameters:
     x: 'x coordinate'
     y: 'y coordinate'
