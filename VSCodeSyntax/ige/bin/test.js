@@ -1,1 +1,1 @@
-console
+console.log('test')

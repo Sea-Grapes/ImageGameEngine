@@ -19,9 +19,16 @@ function activate(context) {
         synchronize: { fileEvents: vscode_1.workspace.createFileSystemWatcher('**/*.ige') }
     };
     client = new node_1.LanguageClient('ige', serverOptions, clientOptions);
-    // languages.setLanguageConfiguration('ige', { wordPattern: /[\S]+/})
-    // commands.executeCommand('editor.action.triggerParameterHints');
     client.start();
+    console.log('test');
+    let lastLine = -1;
+    vscode_1.window.onDidChangeTextEditorSelection(event => {
+        console.log('SELECTION CHANGE');
+        const currentLine = event.textEditor.selection.active.line;
+        if (currentLine !== lastLine)
+            vscode_1.commands.executeCommand('closeParameterHints');
+        lastLine = currentLine;
+    });
 }
 function deactivate() {
     if (client)
