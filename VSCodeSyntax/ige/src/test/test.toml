@@ -1,0 +1,8 @@
+
+[40]
+
+[40.completion]
+title = '(method) 0x40: Goto function'
+docs = '@40' # default
+
+signature.title = '40 x y' # default is 
