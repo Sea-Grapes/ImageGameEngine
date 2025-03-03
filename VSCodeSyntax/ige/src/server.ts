@@ -5,12 +5,12 @@ import * as path from 'path'
 
 const ws = createConnection(ProposedFeatures.all)
 
-console.log('HELLO')
-ws.console.log('HELLO')
-
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument)
 
 ws.onInitialize((): InitializeResult => {
+
+  console.log('[IGE SERVER] active')
+
   return {
     capabilities: {
       textDocumentSync: TextDocumentSyncKind.Incremental,

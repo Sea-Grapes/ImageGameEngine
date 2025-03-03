@@ -29,7 +29,7 @@ export function activate(context: ExtensionContext) {
   client = new LanguageClient('ige', serverOptions, clientOptions)
   client.start()
 
-  console.log('Language client activated')
+  console.log('[IGE CLIENT] active')
 
   // console.log('test')
   let lastLine = -1
