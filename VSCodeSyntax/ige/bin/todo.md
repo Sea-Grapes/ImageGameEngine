@@ -10,3 +10,13 @@
 I could simply parse the current line, get the first for the current command, and the position in the array for the nth parameter
 
 Use snippetString builder thing to build it off of parameters! maybe?
+
+The output of lexing should be like
+
+[
+  {
+    value: 'abc',
+    start: 0,
+    end: 2
+  }
+]

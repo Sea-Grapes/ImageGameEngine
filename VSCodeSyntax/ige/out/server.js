@@ -11,7 +11,7 @@ ws.onInitialize(() => {
             textDocumentSync: node_1.TextDocumentSyncKind.Incremental,
             completionProvider: {
                 resolveProvider: true,
-                // hacky fix to allow number commands, because wordpattern wasn't working
+                // hacky fix to allow number commands, because wordpattern isn't working
                 triggerCharacters: Array.from({ length: 10 }, (v, i) => i.toString())
             },
             signatureHelpProvider: {
@@ -23,6 +23,7 @@ ws.onInitialize(() => {
 // add parsing here to sort methods
 // ex. don't show A0 when typing coords
 ws.onCompletion((params) => {
+    // console.log('EVT: completion')
     // console.log(params)
     const doc = documents.get(params.textDocument.uri);
     const position = params.position;
@@ -92,8 +93,22 @@ ws.onCompletionResolve((item) => {
     return item;
 });
 ws.onSignatureHelp((params) => {
-    // console.log(params)
+    // see if cursor inside a parameter
+    // console.log('EVT: signaturehelp')
+    const doc = documents.get(params.textDocument.uri);
+    const position = params.position;
+    const lineText = doc.getText({
+        start: { line: position.line, character: 0 },
+        end: { line: position.line, character: Number.MAX_VALUE }
+    });
+    const lineTokens = lineText.trim().split(/\s+/);
+    const nearbyChars = lineText.slice(position.character - 1, position.character + 1).trim();
+    const showSignatures = nearbyChars.length > 0;
+    if (!showSignatures)
+        return { signatures: [] };
+    // console.log('signature:', params)
     return {
+        activeParameter: params.context?.activeSignatureHelp?.activeParameter,
         signatures: [
             {
                 label: '40 x y',

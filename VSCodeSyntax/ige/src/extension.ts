@@ -35,17 +35,22 @@ export function activate(context: ExtensionContext) {
       window.showInformationMessage('ige enabled')
     }
   })
-  
-
-  let lastLine = -1
 
   window.onDidChangeTextEditorSelection(event => {
-    const currentLine = event.textEditor.selection.active.line
-
-    if(currentLine !== lastLine) commands.executeCommand('closeParameterHints')
-    lastLine = currentLine
+    console.log('change')
+    commands.executeCommand('editor.action.triggerParameterHints')
   })
   
+
+  // let lastLine = -1
+
+  // window.onDidChangeTextEditorSelection(event => {
+  //   const currentLine = event.textEditor.selection.active.line
+
+  //   if(currentLine !== lastLine) commands.executeCommand('closeParameterHints')
+  //   lastLine = currentLine
+  // })
+
 }
 
 export function deactivate() {
