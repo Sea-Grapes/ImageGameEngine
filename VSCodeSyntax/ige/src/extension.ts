@@ -2,6 +2,7 @@ import * as path from 'path'
 import { workspace, ExtensionContext, window, languages, commands } from 'vscode'
 
 import {
+  Disposable,
   LanguageClient,
   LanguageClientOptions,
   ServerOptions,
@@ -10,6 +11,7 @@ import {
 } from 'vscode-languageclient/node'
 
 let client: LanguageClient
+let selectionChangeListener: Disposable
 
 export function activate(context: ExtensionContext) {
 
@@ -36,7 +38,7 @@ export function activate(context: ExtensionContext) {
     }
   })
 
-  window.onDidChangeTextEditorSelection(event => {
+  selectionChangeListener = window.onDidChangeTextEditorSelection(event => {
     console.log('change')
     commands.executeCommand('editor.action.triggerParameterHints')
   })
@@ -55,4 +57,5 @@ export function activate(context: ExtensionContext) {
 
 export function deactivate() {
   if(client) client.stop()
+  if(selectionChangeListener) selectionChangeListener.dispose()
 }

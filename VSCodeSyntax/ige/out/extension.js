@@ -6,6 +6,7 @@ const path = require("path");
 const vscode_1 = require("vscode");
 const node_1 = require("vscode-languageclient/node");
 let client;
+let selectionChangeListener;
 function activate(context) {
     const module = context.asAbsolutePath(path.join('out', 'server.js'));
     const serverOptions = {
@@ -25,7 +26,7 @@ function activate(context) {
             vscode_1.window.showInformationMessage('ige enabled');
         }
     });
-    vscode_1.window.onDidChangeTextEditorSelection(event => {
+    selectionChangeListener = vscode_1.window.onDidChangeTextEditorSelection(event => {
         console.log('change');
         vscode_1.commands.executeCommand('editor.action.triggerParameterHints');
     });
@@ -39,5 +40,7 @@ function activate(context) {
 function deactivate() {
     if (client)
         client.stop();
+    if (selectionChangeListener)
+        selectionChangeListener.dispose();
 }
 //# sourceMappingURL=extension.js.map

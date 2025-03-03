@@ -97,11 +97,18 @@ ws.onSignatureHelp((params) => {
     // console.log('EVT: signaturehelp')
     const doc = documents.get(params.textDocument.uri);
     const position = params.position;
-    const lineText = doc.getText({
+    let lineText = doc.getText({
         start: { line: position.line, character: 0 },
         end: { line: position.line, character: Number.MAX_VALUE }
     });
-    const lineTokens = lineText.trim().split(/\s+/);
+    let pos = 0;
+    let lineTokens = lineText.trim().split(/\s+/).map(string => {
+        const start = lineText.indexOf(string, pos);
+        const end = pos + string.length;
+        pos = end;
+        return { start, end, string };
+    });
+    console.log(lineTokens);
     const nearbyChars = lineText.slice(position.character - 1, position.character + 1).trim();
     const showSignatures = nearbyChars.length > 0;
     if (!showSignatures)
