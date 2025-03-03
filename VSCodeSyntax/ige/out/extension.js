@@ -7,7 +7,6 @@ const vscode_1 = require("vscode");
 const node_1 = require("vscode-languageclient/node");
 let client;
 function activate(context) {
-    vscode_1.window.showInformationMessage('ige enabled');
     const module = context.asAbsolutePath(path.join('out', 'server.js'));
     const serverOptions = {
         run: { module, transport: node_1.TransportKind.ipc },
@@ -20,11 +19,14 @@ function activate(context) {
     };
     client = new node_1.LanguageClient('ige', serverOptions, clientOptions);
     client.start();
-    console.log('[IGE CLIENT] active');
-    // console.log('test')
+    client.onDidChangeState(event => {
+        if (event.newState === node_1.State.Running) {
+            console.log('[IGE CLIENT] active');
+            vscode_1.window.showInformationMessage('ige enabled');
+        }
+    });
     let lastLine = -1;
     vscode_1.window.onDidChangeTextEditorSelection(event => {
-        // console.log('SELECTION CHANGE')
         const currentLine = event.textEditor.selection.active.line;
         if (currentLine !== lastLine)
             vscode_1.commands.executeCommand('closeParameterHints');

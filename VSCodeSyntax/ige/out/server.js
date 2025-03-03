@@ -20,7 +20,22 @@ ws.onInitialize(() => {
         }
     };
 });
-ws.onCompletion((data) => {
+// add parsing here to sort methods
+// ex. don't show A0 when typing coords
+ws.onCompletion((params) => {
+    // console.log(params)
+    const doc = documents.get(params.textDocument.uri);
+    const position = params.position;
+    const lineText = doc.getText({
+        start: { line: position.line, character: 0 },
+        end: { line: position.line, character: Number.MAX_VALUE }
+    });
+    // get string from start to cursor
+    const lineStart = lineText.slice(0, position.character);
+    const isCursorInFirstWord = lineStart.trim().split(/\s+/).length <= 1;
+    console.log(isCursorInFirstWord);
+    if (!isCursorInFirstWord)
+        return [];
     return [
         {
             label: '40',
@@ -76,7 +91,7 @@ ws.onCompletionResolve((item) => {
     return item;
 });
 ws.onSignatureHelp((params) => {
-    console.log(params);
+    // console.log(params)
     return {
         signatures: [
             {
@@ -112,5 +127,4 @@ ws.onSignatureHelp((params) => {
 });
 documents.listen(ws);
 ws.listen();
-console.log;
 //# sourceMappingURL=server.js.map

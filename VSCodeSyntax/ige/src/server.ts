@@ -1,5 +1,5 @@
 import { TextDocument } from 'vscode-languageserver-textdocument'
-import { CompletionItem, CompletionItemKind, CompletionParams, createConnection, InitializeResult, InsertTextFormat, MarkupKind, ProposedFeatures, SignatureHelpParams, TextDocuments, TextDocumentSyncKind } from 'vscode-languageserver/node'
+import { CompletionItem, CompletionItemKind, CompletionParams, CompletionTriggerKind, createConnection, InitializeResult, InsertTextFormat, MarkupKind, ProposedFeatures, SignatureHelpParams, TextDocuments, TextDocumentSyncKind } from 'vscode-languageserver/node'
 import * as fs from 'fs'
 import * as path from 'path'
 
@@ -26,7 +26,28 @@ ws.onInitialize((): InitializeResult => {
   }
 })
 
-ws.onCompletion((data) => {
+// add parsing here to sort methods
+// ex. don't show A0 when typing coords
+ws.onCompletion((params: CompletionParams) => {
+  
+  // console.log(params)
+  
+  const doc = documents.get(params.textDocument.uri)
+  
+  const position = params.position
+  const lineText = doc.getText({
+    start: { line: position.line, character: 0 },
+    end: { line: position.line, character: Number.MAX_VALUE }
+  })
+
+
+  // get string from start to cursor
+  const lineStart = lineText.slice(0, position.character)
+  const isCursorInFirstWord = lineStart.trim().split(/\s+/).length <= 1
+
+  console.log(isCursorInFirstWord)
+
+  if(!isCursorInFirstWord) return []
 
   return [
     {
@@ -86,7 +107,7 @@ ws.onCompletionResolve((item: CompletionItem) => {
 
 ws.onSignatureHelp((params: SignatureHelpParams) => {
 
-  console.log(params)
+  // console.log(params)
 
   return {
     signatures: [
@@ -124,5 +145,3 @@ ws.onSignatureHelp((params: SignatureHelpParams) => {
 
 documents.listen(ws)
 ws.listen()
-
-console.log

@@ -5,13 +5,13 @@ import {
   LanguageClient,
   LanguageClientOptions,
   ServerOptions,
+  State,
   TransportKind
 } from 'vscode-languageclient/node'
 
 let client: LanguageClient
 
 export function activate(context: ExtensionContext) {
-  window.showInformationMessage('ige enabled')
 
   const module = context.asAbsolutePath(path.join('out', 'server.js'))
 
@@ -29,18 +29,23 @@ export function activate(context: ExtensionContext) {
   client = new LanguageClient('ige', serverOptions, clientOptions)
   client.start()
 
-  console.log('[IGE CLIENT] active')
+  client.onDidChangeState(event => {
+    if(event.newState === State.Running) {
+      console.log('[IGE CLIENT] active')
+      window.showInformationMessage('ige enabled')
+    }
+  })
+  
 
-  // console.log('test')
   let lastLine = -1
 
   window.onDidChangeTextEditorSelection(event => {
-    // console.log('SELECTION CHANGE')
     const currentLine = event.textEditor.selection.active.line
 
     if(currentLine !== lastLine) commands.executeCommand('closeParameterHints')
     lastLine = currentLine
   })
+  
 }
 
 export function deactivate() {
