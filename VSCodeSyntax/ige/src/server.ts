@@ -43,10 +43,10 @@ ws.onCompletion((params: CompletionParams) => {
 
   // get string from start to cursor
   const lineStart = lineText.slice(0, position.character)
+
+  // check if cursor is in the first word. we're assuming that
+  // command completions will always be in the first word
   const isCursorInFirstWord = lineStart.trim().split(/\s+/).length <= 1
-
-  console.log(isCursorInFirstWord)
-
   if(!isCursorInFirstWord) return []
 
   return [
