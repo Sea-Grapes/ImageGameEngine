@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_languageserver_textdocument_1 = require("vscode-languageserver-textdocument");
 const node_1 = require("vscode-languageserver/node");
+// const yaml_data = fs.readFileSync('./docs.yaml')
 const ws = (0, node_1.createConnection)(node_1.ProposedFeatures.all);
 const documents = new node_1.TextDocuments(vscode_languageserver_textdocument_1.TextDocument);
 ws.onInitialize(() => {
@@ -14,17 +15,13 @@ ws.onInitialize(() => {
                 // hacky fix to allow number commands, because wordpattern isn't working
                 triggerCharacters: Array.from({ length: 10 }, (v, i) => i.toString())
             },
-            signatureHelpProvider: {
-                triggerCharacters: [' ']
-            }
+            // signatureHelpProvider: {
+            //   triggerCharacters: [' ']
+            // }
         }
     };
 });
-// add parsing here to sort methods
-// ex. don't show A0 when typing coords
 ws.onCompletion((params) => {
-    // console.log('EVT: completion')
-    // console.log(params)
     const doc = documents.get(params.textDocument.uri);
     const position = params.position;
     const lineText = doc.getText({
@@ -92,62 +89,71 @@ ws.onCompletion((params) => {
 ws.onCompletionResolve((item) => {
     return item;
 });
-ws.onSignatureHelp((params) => {
-    // see if cursor inside a parameter
-    // console.log('EVT: signaturehelp')
-    const doc = documents.get(params.textDocument.uri);
-    const position = params.position;
-    let lineText = doc.getText({
-        start: { line: position.line, character: 0 },
-        end: { line: position.line, character: Number.MAX_VALUE }
-    });
-    let pos = 0;
-    let lineTokens = lineText.trim().split(/\s+/).map(string => {
-        const start = lineText.indexOf(string, pos);
-        const end = pos + string.length;
-        pos = end;
-        return { start, end, string };
-    });
-    console.log(lineTokens);
-    const nearbyChars = lineText.slice(position.character - 1, position.character + 1).trim();
-    const showSignatures = nearbyChars.length > 0;
-    if (!showSignatures)
-        return { signatures: [] };
-    // console.log('signature:', params)
-    return {
-        activeParameter: params.context?.activeSignatureHelp?.activeParameter,
-        signatures: [
-            {
-                label: '40 x y',
-                documentation: 'this is a test does this work',
-                parameters: [
-                    {
-                        label: 'x',
-                        documentation: 'x coordinate'
-                    },
-                    {
-                        label: 'y',
-                        documentation: 'y coordinate'
-                    }
-                ]
-            },
-            {
-                label: 'B0 x y',
-                documentation: 'Writes a singular pixel value to a specific address.',
-                parameters: [
-                    {
-                        label: 'x',
-                        documentation: 'x coordinate'
-                    },
-                    {
-                        label: 'y',
-                        documentation: 'y coordinate'
-                    }
-                ]
-            }
+/*
+ws.onSignatureHelp((params: SignatureHelpParams) => {
+  // see if cursor inside a parameter
+
+  const doc = documents.get(params.textDocument.uri)
+  const position = params.position
+
+  let lineText = doc.getText({
+    start: { line: position.line, character: 0 },
+    end: { line: position.line, character: Number.MAX_VALUE }
+  })
+
+
+  let pos = 0
+  let lineTokens = lineText.trim().split(/\s+/).map(string => {
+    const start = lineText.indexOf(string, pos)
+    const end = pos + string.length
+
+    pos = end
+    return { start, end, string }
+  })
+
+  console.log(lineTokens)
+
+
+  const nearbyChars = lineText.slice(position.character-1, position.character+1).trim()
+  const showSignatures = nearbyChars.length > 0
+
+  if(!showSignatures) return { signatures: [] }
+  
+  return {
+    activeParameter: params.context?.activeSignatureHelp?.activeParameter,
+    signatures: [
+      {
+        label: '40 x y',
+        documentation: 'this is a test does this work',
+        parameters: [
+          {
+            label: 'x',
+            documentation: 'x coordinate'
+          },
+          {
+            label: 'y',
+            documentation: 'y coordinate'
+          }
         ]
-    };
-});
+      },
+      {
+        label: 'B0 x y',
+        documentation: 'Writes a singular pixel value to a specific address.',
+        parameters: [
+          {
+            label: 'x',
+            documentation: 'x coordinate'
+          },
+          {
+            label: 'y',
+            documentation: 'y coordinate'
+          }
+        ]
+      }
+    ]
+  }
+})
+*/
 documents.listen(ws);
 ws.listen();
 //# sourceMappingURL=server.js.map

@@ -38,10 +38,10 @@ export function activate(context: ExtensionContext) {
     }
   })
 
-  selectionChangeListener = window.onDidChangeTextEditorSelection(event => {
-    console.log('change')
-    commands.executeCommand('editor.action.triggerParameterHints')
-  })
+  // selectionChangeListener = window.onDidChangeTextEditorSelection(event => {
+  //   console.log('change')
+  //   commands.executeCommand('editor.action.triggerParameterHints')
+  // })
   
 
   // let lastLine = -1

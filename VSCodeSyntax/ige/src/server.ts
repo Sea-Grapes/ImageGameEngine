@@ -3,6 +3,10 @@ import { CompletionItem, CompletionItemKind, CompletionParams, CompletionTrigger
 import * as fs from 'fs'
 import * as path from 'path'
 
+
+// const yaml_data = fs.readFileSync('./docs.yaml')
+
+
 const ws = createConnection(ProposedFeatures.all)
 
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument)
@@ -19,20 +23,15 @@ ws.onInitialize((): InitializeResult => {
         // hacky fix to allow number commands, because wordpattern isn't working
         triggerCharacters: Array.from({length: 10}, (v, i) => i.toString())
       },
-      signatureHelpProvider: {
-        triggerCharacters: [' ']
-      }
+      // signatureHelpProvider: {
+      //   triggerCharacters: [' ']
+      // }
     }
   }
 })
 
-// add parsing here to sort methods
-// ex. don't show A0 when typing coords
 ws.onCompletion((params: CompletionParams) => {
-  
-  // console.log('EVT: completion')
-  // console.log(params)
-  
+
   const doc = documents.get(params.textDocument.uri)
   
   const position = params.position
@@ -108,10 +107,10 @@ ws.onCompletionResolve((item: CompletionItem) => {
   return item
 })
 
+
+/*
 ws.onSignatureHelp((params: SignatureHelpParams) => {
   // see if cursor inside a parameter
-
-  // console.log('EVT: signaturehelp')
 
   const doc = documents.get(params.textDocument.uri)
   const position = params.position
@@ -139,8 +138,6 @@ ws.onSignatureHelp((params: SignatureHelpParams) => {
 
   if(!showSignatures) return { signatures: [] }
   
-  // console.log('signature:', params)
-
   return {
     activeParameter: params.context?.activeSignatureHelp?.activeParameter,
     signatures: [
@@ -175,6 +172,7 @@ ws.onSignatureHelp((params: SignatureHelpParams) => {
     ]
   }
 })
+*/
 
 documents.listen(ws)
 ws.listen()

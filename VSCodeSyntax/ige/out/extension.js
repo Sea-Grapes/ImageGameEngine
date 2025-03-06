@@ -26,10 +26,10 @@ function activate(context) {
             vscode_1.window.showInformationMessage('ige enabled');
         }
     });
-    selectionChangeListener = vscode_1.window.onDidChangeTextEditorSelection(event => {
-        console.log('change');
-        vscode_1.commands.executeCommand('editor.action.triggerParameterHints');
-    });
+    // selectionChangeListener = window.onDidChangeTextEditorSelection(event => {
+    //   console.log('change')
+    //   commands.executeCommand('editor.action.triggerParameterHints')
+    // })
     // let lastLine = -1
     // window.onDidChangeTextEditorSelection(event => {
     //   const currentLine = event.textEditor.selection.active.line
