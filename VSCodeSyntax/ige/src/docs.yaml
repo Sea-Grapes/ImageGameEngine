@@ -1,5 +1,7 @@
 '40':
   title: '(method) 0x40: Goto function'
-  
-  # default values, you don't have to set these
-  docs: '@40'
+  description: '@40'
+
+'setup':
+  title: '(snippet) setup'
+  description: 'Default project setup snippet.'
