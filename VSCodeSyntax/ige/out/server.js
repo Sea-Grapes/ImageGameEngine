@@ -94,7 +94,7 @@ ws.onSignatureHelp((params) => {
     // see if cursor inside a parameter
     const doc = documents.get(params.textDocument.uri);
     const position = params.position;
-    console.log('sig req at ', position);
+    // console.log('sig req at ', position)
     let lineText = doc.getText({
         start: { line: position.line, character: 0 },
         end: { line: position.line, character: Number.MAX_VALUE }
@@ -106,9 +106,9 @@ ws.onSignatureHelp((params) => {
         pos = end;
         return { start, end, string };
     });
-    const currentToken = lineTokens.find(token => position.character >= token.start && position.character <= token.end);
+    const currentToken = lineTokens.find(token => position.character >= token.start && position.character <= token.end) || null;
     console.log(currentToken);
-    if (!currentToken)
+    if (currentToken === null)
         return { signatures: [] };
     // console.log(lineTokens)
     // const nearbyChars = lineText.slice(position.character-1, position.character+1).trim()

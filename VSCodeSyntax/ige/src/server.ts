@@ -118,7 +118,7 @@ ws.onSignatureHelp((params: SignatureHelpParams) => {
   const doc = documents.get(params.textDocument.uri)
   const position = params.position
 
-  console.log('sig req at ', position)
+  // console.log('sig req at ', position)
 
   let lineText = doc.getText({
     start: { line: position.line, character: 0 },
@@ -135,11 +135,11 @@ ws.onSignatureHelp((params: SignatureHelpParams) => {
     return { start, end, string }
   })
 
-  const currentToken = lineTokens.find(token => position.character >= token.start && position.character <= token.end)
+  const currentToken = lineTokens.find(token => position.character >= token.start && position.character <= token.end) || null
 
   console.log(currentToken)
 
-  if(!currentToken) return { signatures: [] }
+  if(currentToken === null) return { signatures: [] }
 
   // console.log(lineTokens)
 
