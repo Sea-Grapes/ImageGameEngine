@@ -135,13 +135,18 @@ ws.onSignatureHelp((params: SignatureHelpParams) => {
     return { start, end, string }
   })
 
-  console.log(lineTokens)
+  const currentToken = lineTokens.find(token => position.character >= token.start && position.character <= token.end)
+
+  console.log(currentToken)
+
+  if(!currentToken) return { signatures: [] }
+
+  // console.log(lineTokens)
 
 
-  const nearbyChars = lineText.slice(position.character-1, position.character+1).trim()
-  const showSignatures = nearbyChars.length > 0
-
-  if(!showSignatures) return { signatures: [] }
+  // const nearbyChars = lineText.slice(position.character-1, position.character+1).trim()
+  // const showSignatures = nearbyChars.length > 0
+  // if(!showSignatures) return { signatures: [] }
   
   return {
     activeParameter: params.context?.activeSignatureHelp?.activeParameter,
