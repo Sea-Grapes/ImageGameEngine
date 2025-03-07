@@ -32,6 +32,8 @@ ws.onInitialize((): InitializeResult => {
 
 ws.onCompletion((params: CompletionParams) => {
 
+  console.log('completion')
+
   const doc = documents.get(params.textDocument.uri)
   
   const position = params.position

@@ -22,6 +22,7 @@ ws.onInitialize(() => {
     };
 });
 ws.onCompletion((params) => {
+    console.log('completion');
     const doc = documents.get(params.textDocument.uri);
     const position = params.position;
     const lineText = doc.getText({
