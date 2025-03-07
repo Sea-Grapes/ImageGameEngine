@@ -15,9 +15,9 @@ ws.onInitialize(() => {
                 // hacky fix to allow number commands, because wordpattern isn't working
                 triggerCharacters: Array.from({ length: 10 }, (v, i) => i.toString())
             },
-            // signatureHelpProvider: {
-            //   triggerCharacters: [' ']
-            // }
+            signatureHelpProvider: {
+                triggerCharacters: [' ']
+            }
         }
     };
 });
@@ -90,71 +90,61 @@ ws.onCompletion((params) => {
 ws.onCompletionResolve((item) => {
     return item;
 });
-/*
-ws.onSignatureHelp((params: SignatureHelpParams) => {
-  // see if cursor inside a parameter
-
-  const doc = documents.get(params.textDocument.uri)
-  const position = params.position
-
-  let lineText = doc.getText({
-    start: { line: position.line, character: 0 },
-    end: { line: position.line, character: Number.MAX_VALUE }
-  })
-
-
-  let pos = 0
-  let lineTokens = lineText.trim().split(/\s+/).map(string => {
-    const start = lineText.indexOf(string, pos)
-    const end = pos + string.length
-
-    pos = end
-    return { start, end, string }
-  })
-
-  console.log(lineTokens)
-
-
-  const nearbyChars = lineText.slice(position.character-1, position.character+1).trim()
-  const showSignatures = nearbyChars.length > 0
-
-  if(!showSignatures) return { signatures: [] }
-  
-  return {
-    activeParameter: params.context?.activeSignatureHelp?.activeParameter,
-    signatures: [
-      {
-        label: '40 x y',
-        documentation: 'this is a test does this work',
-        parameters: [
-          {
-            label: 'x',
-            documentation: 'x coordinate'
-          },
-          {
-            label: 'y',
-            documentation: 'y coordinate'
-          }
+ws.onSignatureHelp((params) => {
+    // see if cursor inside a parameter
+    const doc = documents.get(params.textDocument.uri);
+    const position = params.position;
+    console.log('sig req at ', position);
+    let lineText = doc.getText({
+        start: { line: position.line, character: 0 },
+        end: { line: position.line, character: Number.MAX_VALUE }
+    });
+    let pos = 0;
+    let lineTokens = lineText.trim().split(/\s+/).map(string => {
+        const start = lineText.indexOf(string, pos);
+        const end = start + string.length;
+        pos = end;
+        return { start, end, string };
+    });
+    console.log(lineTokens);
+    const nearbyChars = lineText.slice(position.character - 1, position.character + 1).trim();
+    const showSignatures = nearbyChars.length > 0;
+    if (!showSignatures)
+        return { signatures: [] };
+    return {
+        activeParameter: params.context?.activeSignatureHelp?.activeParameter,
+        signatures: [
+            {
+                label: '40 x y',
+                documentation: 'this is a test does this work',
+                parameters: [
+                    {
+                        label: 'x',
+                        documentation: 'x coordinate'
+                    },
+                    {
+                        label: 'y',
+                        documentation: 'y coordinate'
+                    }
+                ]
+            },
+            {
+                label: 'B0 x y',
+                documentation: 'Writes a singular pixel value to a specific address.',
+                parameters: [
+                    {
+                        label: 'x',
+                        documentation: 'x coordinate'
+                    },
+                    {
+                        label: 'y',
+                        documentation: 'y coordinate'
+                    }
+                ]
+            }
         ]
-      },
-      {
-        label: 'B0 x y',
-        documentation: 'Writes a singular pixel value to a specific address.',
-        parameters: [
-          {
-            label: 'x',
-            documentation: 'x coordinate'
-          },
-          {
-            label: 'y',
-            documentation: 'y coordinate'
-          }
-        ]
-      }
-    ]
-  }
-})
-*/
+    };
+});
 documents.listen(ws);
 ws.listen();
 //# sourceMappingURL=server.js.map

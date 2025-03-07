@@ -23,9 +23,9 @@ ws.onInitialize((): InitializeResult => {
         // hacky fix to allow number commands, because wordpattern isn't working
         triggerCharacters: Array.from({length: 10}, (v, i) => i.toString())
       },
-      // signatureHelpProvider: {
-      //   triggerCharacters: [' ']
-      // }
+      signatureHelpProvider: {
+        triggerCharacters: [' ']
+      }
     }
   }
 })
@@ -110,12 +110,15 @@ ws.onCompletionResolve((item: CompletionItem) => {
 })
 
 
-/*
+
 ws.onSignatureHelp((params: SignatureHelpParams) => {
   // see if cursor inside a parameter
 
+
   const doc = documents.get(params.textDocument.uri)
   const position = params.position
+
+  console.log('sig req at ', position)
 
   let lineText = doc.getText({
     start: { line: position.line, character: 0 },
@@ -126,7 +129,7 @@ ws.onSignatureHelp((params: SignatureHelpParams) => {
   let pos = 0
   let lineTokens = lineText.trim().split(/\s+/).map(string => {
     const start = lineText.indexOf(string, pos)
-    const end = pos + string.length
+    const end = start + string.length
 
     pos = end
     return { start, end, string }
@@ -174,7 +177,6 @@ ws.onSignatureHelp((params: SignatureHelpParams) => {
     ]
   }
 })
-*/
 
 documents.listen(ws)
 ws.listen()

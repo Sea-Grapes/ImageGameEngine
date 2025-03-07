@@ -26,10 +26,12 @@ function activate(context) {
             vscode_1.window.showInformationMessage('ige enabled');
         }
     });
-    // selectionChangeListener = window.onDidChangeTextEditorSelection(event => {
-    //   console.log('change')
-    //   commands.executeCommand('editor.action.triggerParameterHints')
-    // })
+    selectionChangeListener = vscode_1.window.onDidChangeTextEditorSelection(event => {
+        console.log('change');
+        // commands.executeCommand('editor.action.triggerParameterHints')
+        vscode_1.commands.executeCommand('vscode.executeSignatureHelpProvider', event.textEditor.document.uri, event.textEditor.selection.active);
+    });
+    context.subscriptions.push(selectionChangeListener);
     // let lastLine = -1
     // window.onDidChangeTextEditorSelection(event => {
     //   const currentLine = event.textEditor.selection.active.line
@@ -38,9 +40,8 @@ function activate(context) {
     // })
 }
 function deactivate() {
+    // if(selectionChangeListener) selectionChangeListener.dispose()
     if (client)
         client.stop();
-    if (selectionChangeListener)
-        selectionChangeListener.dispose();
 }
 //# sourceMappingURL=extension.js.map

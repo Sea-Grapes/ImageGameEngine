@@ -38,10 +38,17 @@ export function activate(context: ExtensionContext) {
     }
   })
 
-  // selectionChangeListener = window.onDidChangeTextEditorSelection(event => {
-  //   console.log('change')
-  //   commands.executeCommand('editor.action.triggerParameterHints')
-  // })
+  selectionChangeListener = window.onDidChangeTextEditorSelection(event => {
+    console.log('change')
+    // commands.executeCommand('editor.action.triggerParameterHints')
+    commands.executeCommand(
+      'vscode.executeSignatureHelpProvider',
+      event.textEditor.document.uri,
+      event.textEditor.selection.active
+    )
+  })
+
+  context.subscriptions.push(selectionChangeListener)
   
 
   // let lastLine = -1
@@ -56,6 +63,6 @@ export function activate(context: ExtensionContext) {
 }
 
 export function deactivate() {
+  // if(selectionChangeListener) selectionChangeListener.dispose()
   if(client) client.stop()
-  if(selectionChangeListener) selectionChangeListener.dispose()
 }
