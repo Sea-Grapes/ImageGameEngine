@@ -7,22 +7,23 @@ const ws = (0, node_1.createConnection)(node_1.ProposedFeatures.all);
 const documents = new node_1.TextDocuments(vscode_languageserver_textdocument_1.TextDocument);
 ws.onInitialize(() => {
     console.log('[IGE SERVER] active');
+    const numberTriggers = Array.from({ length: 10 }, (v, i) => i.toString());
     return {
         capabilities: {
             textDocumentSync: node_1.TextDocumentSyncKind.Incremental,
             completionProvider: {
                 resolveProvider: true,
                 // hacky fix to allow number commands, because wordpattern isn't working
-                triggerCharacters: Array.from({ length: 10 }, (v, i) => i.toString())
+                triggerCharacters: numberTriggers
             },
             signatureHelpProvider: {
-                triggerCharacters: [' ']
+                triggerCharacters: 'abcdefghijklmnopqrstuvwxyz '.split('').concat(numberTriggers)
             }
         }
     };
 });
 ws.onCompletion((params) => {
-    console.log('completion');
+    // console.log('completion')
     const doc = documents.get(params.textDocument.uri);
     const position = params.position;
     const lineText = doc.getText({
@@ -92,6 +93,7 @@ ws.onCompletionResolve((item) => {
 });
 ws.onSignatureHelp((params) => {
     // see if cursor inside a parameter
+    console.log('evt: sig help');
     const doc = documents.get(params.textDocument.uri);
     const position = params.position;
     // console.log('sig req at ', position)
@@ -106,10 +108,10 @@ ws.onSignatureHelp((params) => {
         pos = end;
         return { start, end, string };
     });
-    const currentToken = lineTokens.find(token => position.character >= token.start && position.character <= token.end) || null;
-    console.log(currentToken);
-    if (currentToken === null)
-        return { signatures: [] };
+    const currentTokenIndex = lineTokens.findIndex(token => position.character >= token.start && position.character <= token.end);
+    const currentToken = currentTokenIndex >= 0 ? lineTokens[currentTokenIndex] : null;
+    console.log(currentTokenIndex);
+    // if(currentToken === null || currentTokenIndex === 0) return { signatures: [] }
     // console.log(lineTokens)
     // const nearbyChars = lineText.slice(position.character-1, position.character+1).trim()
     // const showSignatures = nearbyChars.length > 0

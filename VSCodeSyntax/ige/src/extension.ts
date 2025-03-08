@@ -38,17 +38,17 @@ export function activate(context: ExtensionContext) {
     }
   })
 
-  selectionChangeListener = window.onDidChangeTextEditorSelection(event => {
-    console.log('change')
-    // commands.executeCommand('editor.action.triggerParameterHints')
-    commands.executeCommand(
-      'vscode.executeSignatureHelpProvider',
-      event.textEditor.document.uri,
-      event.textEditor.selection.active
-    )
-  })
+  // selectionChangeListener = window.onDidChangeTextEditorSelection(event => {
+  //   console.log('change')
+  //   commands.executeCommand('editor.action.triggerParameterHints')
+  //   // commands.executeCommand(
+  //   //   'vscode.executeSignatureHelpProvider',
+  //   //   event.textEditor.document.uri,
+  //   //   event.textEditor.selection.active
+  //   // )
+  // })
 
-  context.subscriptions.push(selectionChangeListener)
+  // context.subscriptions.push(selectionChangeListener)
   
 
   // let lastLine = -1

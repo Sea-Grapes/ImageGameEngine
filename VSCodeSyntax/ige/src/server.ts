@@ -15,16 +15,18 @@ ws.onInitialize((): InitializeResult => {
 
   console.log('[IGE SERVER] active')
 
+  const numberTriggers = Array.from({length: 10}, (v, i) => i.toString())
+
   return {
     capabilities: {
       textDocumentSync: TextDocumentSyncKind.Incremental,
       completionProvider: {
         resolveProvider: true,
         // hacky fix to allow number commands, because wordpattern isn't working
-        triggerCharacters: Array.from({length: 10}, (v, i) => i.toString())
+        triggerCharacters: numberTriggers
       },
       signatureHelpProvider: {
-        triggerCharacters: [' ']
+        triggerCharacters: 'abcdefghijklmnopqrstuvwxyz '.split('').concat(numberTriggers)
       }
     }
   }
@@ -32,7 +34,7 @@ ws.onInitialize((): InitializeResult => {
 
 ws.onCompletion((params: CompletionParams) => {
 
-  console.log('completion')
+  // console.log('completion')
 
   const doc = documents.get(params.textDocument.uri)
   
@@ -114,6 +116,8 @@ ws.onCompletionResolve((item: CompletionItem) => {
 ws.onSignatureHelp((params: SignatureHelpParams) => {
   // see if cursor inside a parameter
 
+  console.log('evt: sig help')
+
 
   const doc = documents.get(params.textDocument.uri)
   const position = params.position
@@ -135,11 +139,12 @@ ws.onSignatureHelp((params: SignatureHelpParams) => {
     return { start, end, string }
   })
 
-  const currentToken = lineTokens.find(token => position.character >= token.start && position.character <= token.end) || null
+  const currentTokenIndex = lineTokens.findIndex(token => position.character >= token.start && position.character <= token.end)
+  const currentToken = currentTokenIndex >= 0 ? lineTokens[currentTokenIndex] : null
 
-  console.log(currentToken)
+  console.log(currentTokenIndex)
 
-  if(currentToken === null) return { signatures: [] }
+  // if(currentToken === null || currentTokenIndex === 0) return { signatures: [] }
 
   // console.log(lineTokens)
 
