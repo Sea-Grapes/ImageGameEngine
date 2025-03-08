@@ -2,7 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_languageserver_textdocument_1 = require("vscode-languageserver-textdocument");
 const node_1 = require("vscode-languageserver/node");
-// const yaml_data = fs.readFileSync('./docs.yaml')
+const fs = require("fs");
+const path = require("path");
+try {
+    console.log(__dirname);
+    const yaml_data = fs.readdirSync(path.join(__dirname, './'));
+    console.log(yaml_data);
+}
+catch (e) {
+    console.log('yaml read failed');
+}
 const ws = (0, node_1.createConnection)(node_1.ProposedFeatures.all);
 const documents = new node_1.TextDocuments(vscode_languageserver_textdocument_1.TextDocument);
 ws.onInitialize(() => {
@@ -97,12 +106,14 @@ ws.onCompletionResolve((item) => {
 });
 ws.onSignatureHelp((params) => {
     // see if cursor inside a parameter
+    // this is purely for methods parameters
     const doc = documents.get(params.textDocument.uri);
     const position = params.position;
     let lineText = doc.getText({
         start: { line: position.line, character: 0 },
         end: { line: position.line, character: Number.MAX_VALUE }
     });
+    // let firstToken = lineText.match(/\S+/)[0]
     let tokens = Array.from(lineText.trimStart().matchAll(/ *\S+|\s+/g)).map(token => {
         return {
             string: token[0],

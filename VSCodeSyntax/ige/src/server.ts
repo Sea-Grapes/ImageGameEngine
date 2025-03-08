@@ -4,8 +4,13 @@ import * as fs from 'fs'
 import * as path from 'path'
 
 
-// const yaml_data = fs.readFileSync('./docs.yaml')
-
+try {
+  console.log(__dirname)
+  const yaml_data = fs.readdirSync(path.join(__dirname, './'))
+  console.log(yaml_data)
+} catch(e) {
+  console.log('yaml read failed')
+}
 
 const ws = createConnection(ProposedFeatures.all)
 
@@ -119,6 +124,7 @@ ws.onCompletionResolve((item: CompletionItem) => {
 
 ws.onSignatureHelp((params: SignatureHelpParams) => {
   // see if cursor inside a parameter
+  // this is purely for methods parameters
 
   const doc = documents.get(params.textDocument.uri)
   const position = params.position
@@ -127,6 +133,8 @@ ws.onSignatureHelp((params: SignatureHelpParams) => {
     start: { line: position.line, character: 0 },
     end: { line: position.line, character: Number.MAX_VALUE }
   })
+
+  // let firstToken = lineText.match(/\S+/)[0]
 
   let tokens = Array.from(lineText.trimStart().matchAll(/ *\S+|\s+/g)).map(token => {
     return {

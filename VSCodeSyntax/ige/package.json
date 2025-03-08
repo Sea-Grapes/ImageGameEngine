@@ -32,6 +32,9 @@
     ]
   },
   "main": "out/extension.js",
+  "files": [
+    "data/**"
+  ],
   "scripts": {
     "vscode:prepublish": "tsc -b"
   },
