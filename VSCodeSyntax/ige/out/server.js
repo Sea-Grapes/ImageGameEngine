@@ -8,6 +8,11 @@ const documents = new node_1.TextDocuments(vscode_languageserver_textdocument_1.
 ws.onInitialize(() => {
     console.log('[IGE SERVER] active');
     const numberTriggers = Array.from({ length: 10 }, (v, i) => i.toString());
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+    const signatureTriggers = alphabet.split('')
+        .concat(alphabet.toUpperCase().split(''))
+        .concat(numberTriggers)
+        .concat(' ', '$');
     return {
         capabilities: {
             textDocumentSync: node_1.TextDocumentSyncKind.Incremental,
@@ -17,7 +22,7 @@ ws.onInitialize(() => {
                 triggerCharacters: numberTriggers
             },
             signatureHelpProvider: {
-                triggerCharacters: 'abcdefghijklmnopqrstuvwxyz '.split('').concat(numberTriggers)
+                triggerCharacters: signatureTriggers
             }
         }
     };
@@ -93,14 +98,14 @@ ws.onCompletionResolve((item) => {
 });
 ws.onSignatureHelp((params) => {
     // see if cursor inside a parameter
-    console.log('evt: sig help');
+    // console.log('evt: sig help')
     const doc = documents.get(params.textDocument.uri);
     const position = params.position;
     let lineText = doc.getText({
         start: { line: position.line, character: 0 },
         end: { line: position.line, character: Number.MAX_VALUE }
     });
-    let tokens = Array.from(lineText.trimStart().matchAll(/ *\S+/g)).map(token => {
+    let tokens = Array.from(lineText.trimStart().matchAll(/ *\S+|\s+/g)).map(token => {
         return {
             string: token[0],
             start: token.index,
@@ -108,9 +113,16 @@ ws.onSignatureHelp((params) => {
         };
     });
     // tokens.shift()
+    console.log('cursorPos:', position.character);
+    console.log('tokens: ', tokens);
     const currentTokenIndex = tokens.findIndex(token => position.character >= token.start && position.character <= token.end);
-    console.log(currentTokenIndex);
+    console.log('currentToken: ', currentTokenIndex);
     if (currentTokenIndex <= 0)
+        return null;
+    let currentParameterIndex = currentTokenIndex - 1;
+    // fill this in with real value later
+    let numOfParams = 2;
+    if (currentParameterIndex >= numOfParams)
         return null;
     // let pos = 0
     // let lineTokens = lineText.trim().split(/\s+/).map(string => {
@@ -124,7 +136,7 @@ ws.onSignatureHelp((params) => {
     // console.log(currentTokenIndex)
     // if(currentToken === null || currentTokenIndex === 0) return { signatures: [] }
     return {
-        activeParameter: currentTokenIndex - 1,
+        activeParameter: currentParameterIndex,
         signatures: [
             {
                 label: '40 x y',
