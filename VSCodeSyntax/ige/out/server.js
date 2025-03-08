@@ -103,10 +103,15 @@ ws.onSignatureHelp((params) => {
     let tokens = Array.from(lineText.trimStart().matchAll(/ *\S+/g)).map(token => {
         return {
             string: token[0],
-            pos: token.index
+            start: token.index,
+            end: token.index + token[0].length
         };
     });
-    console.log(tokens);
+    // tokens.shift()
+    const currentTokenIndex = tokens.findIndex(token => position.character >= token.start && position.character <= token.end);
+    console.log(currentTokenIndex);
+    if (currentTokenIndex === 0)
+        return;
     // let pos = 0
     // let lineTokens = lineText.trim().split(/\s+/).map(string => {
     //   const start = lineText.indexOf(string, pos)
@@ -119,7 +124,7 @@ ws.onSignatureHelp((params) => {
     // console.log(currentTokenIndex)
     // if(currentToken === null || currentTokenIndex === 0) return { signatures: [] }
     return {
-        activeParameter: params.context?.activeSignatureHelp?.activeParameter,
+        activeParameter: currentTokenIndex - 1,
         signatures: [
             {
                 label: '40 x y',
