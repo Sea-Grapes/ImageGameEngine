@@ -6,7 +6,6 @@ const path = require("path");
 const vscode_1 = require("vscode");
 const node_1 = require("vscode-languageclient/node");
 let client;
-let selectionChangeListener;
 function activate(context) {
     const module = context.asAbsolutePath(path.join('out', 'server.js'));
     const serverOptions = {
@@ -35,16 +34,8 @@ function activate(context) {
     //   //   event.textEditor.selection.active
     //   // )
     // })
-    // context.subscriptions.push(selectionChangeListener)
-    // let lastLine = -1
-    // window.onDidChangeTextEditorSelection(event => {
-    //   const currentLine = event.textEditor.selection.active.line
-    //   if(currentLine !== lastLine) commands.executeCommand('closeParameterHints')
-    //   lastLine = currentLine
-    // })
 }
 function deactivate() {
-    // if(selectionChangeListener) selectionChangeListener.dispose()
     if (client)
         client.stop();
 }

@@ -1,8 +1,7 @@
 import * as path from 'path'
-import { workspace, ExtensionContext, window, languages, commands } from 'vscode'
+import { ExtensionContext, window, workspace } from 'vscode'
 
 import {
-  Disposable,
   LanguageClient,
   LanguageClientOptions,
   ServerOptions,
@@ -11,7 +10,6 @@ import {
 } from 'vscode-languageclient/node'
 
 let client: LanguageClient
-let selectionChangeListener: Disposable
 
 export function activate(context: ExtensionContext) {
 
@@ -47,22 +45,8 @@ export function activate(context: ExtensionContext) {
   //   //   event.textEditor.selection.active
   //   // )
   // })
-
-  // context.subscriptions.push(selectionChangeListener)
-  
-
-  // let lastLine = -1
-
-  // window.onDidChangeTextEditorSelection(event => {
-  //   const currentLine = event.textEditor.selection.active.line
-
-  //   if(currentLine !== lastLine) commands.executeCommand('closeParameterHints')
-  //   lastLine = currentLine
-  // })
-
 }
 
 export function deactivate() {
-  // if(selectionChangeListener) selectionChangeListener.dispose()
   if(client) client.stop()
 }
