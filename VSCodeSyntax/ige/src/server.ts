@@ -122,36 +122,36 @@ ws.onSignatureHelp((params: SignatureHelpParams) => {
   const doc = documents.get(params.textDocument.uri)
   const position = params.position
 
-  // console.log('sig req at ', position)
-
   let lineText = doc.getText({
     start: { line: position.line, character: 0 },
     end: { line: position.line, character: Number.MAX_VALUE }
   })
 
-
-  let pos = 0
-  let lineTokens = lineText.trim().split(/\s+/).map(string => {
-    const start = lineText.indexOf(string, pos)
-    const end = start + string.length
-
-    pos = end
-    return { start, end, string }
+  let tokens = Array.from(lineText.trimStart().matchAll(/ *\S+/g)).map(token => {
+    return {
+      string: token[0],
+      pos: token.index
+    }
   })
 
-  const currentTokenIndex = lineTokens.findIndex(token => position.character >= token.start && position.character <= token.end)
-  const currentToken = currentTokenIndex >= 0 ? lineTokens[currentTokenIndex] : null
+  console.log(tokens)
 
-  console.log(currentTokenIndex)
+
+  // let pos = 0
+  // let lineTokens = lineText.trim().split(/\s+/).map(string => {
+  //   const start = lineText.indexOf(string, pos)
+  //   const end = start + string.length
+
+  //   pos = end
+  //   return { start, end, string }
+  // })
+
+  // const currentTokenIndex = lineTokens.findIndex(token => position.character >= token.start && position.character <= token.end)
+  // const currentToken = currentTokenIndex >= 0 ? lineTokens[currentTokenIndex] : null
+
+  // console.log(currentTokenIndex)
 
   // if(currentToken === null || currentTokenIndex === 0) return { signatures: [] }
-
-  // console.log(lineTokens)
-
-
-  // const nearbyChars = lineText.slice(position.character-1, position.character+1).trim()
-  // const showSignatures = nearbyChars.length > 0
-  // if(!showSignatures) return { signatures: [] }
   
   return {
     activeParameter: params.context?.activeSignatureHelp?.activeParameter,
