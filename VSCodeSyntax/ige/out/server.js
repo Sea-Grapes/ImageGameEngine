@@ -28,7 +28,6 @@ ws.onInitialize(() => {
     };
 });
 ws.onCompletion((params) => {
-    // console.log('completion')
     const doc = documents.get(params.textDocument.uri);
     const position = params.position;
     const lineText = doc.getText({
@@ -98,7 +97,6 @@ ws.onCompletionResolve((item) => {
 });
 ws.onSignatureHelp((params) => {
     // see if cursor inside a parameter
-    // console.log('evt: sig help')
     const doc = documents.get(params.textDocument.uri);
     const position = params.position;
     let lineText = doc.getText({
@@ -112,11 +110,7 @@ ws.onSignatureHelp((params) => {
             end: token.index + token[0].length
         };
     });
-    // tokens.shift()
-    console.log('cursorPos:', position.character);
-    console.log('tokens: ', tokens);
     const currentTokenIndex = tokens.findIndex(token => position.character >= token.start && position.character <= token.end);
-    console.log('currentToken: ', currentTokenIndex);
     if (currentTokenIndex <= 0)
         return null;
     let currentParameterIndex = currentTokenIndex - 1;
@@ -124,17 +118,6 @@ ws.onSignatureHelp((params) => {
     let numOfParams = 2;
     if (currentParameterIndex >= numOfParams)
         return null;
-    // let pos = 0
-    // let lineTokens = lineText.trim().split(/\s+/).map(string => {
-    //   const start = lineText.indexOf(string, pos)
-    //   const end = start + string.length
-    //   pos = end
-    //   return { start, end, string }
-    // })
-    // const currentTokenIndex = lineTokens.findIndex(token => position.character >= token.start && position.character <= token.end)
-    // const currentToken = currentTokenIndex >= 0 ? lineTokens[currentTokenIndex] : null
-    // console.log(currentTokenIndex)
-    // if(currentToken === null || currentTokenIndex === 0) return { signatures: [] }
     return {
         activeParameter: currentParameterIndex,
         signatures: [
