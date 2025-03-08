@@ -3,7 +3,7 @@ venv
 state.png
 code.png
 
-#.vscode
+.vscode
 .vscodeignore
 
 # extension
