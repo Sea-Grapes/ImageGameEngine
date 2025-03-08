@@ -110,7 +110,7 @@ ws.onSignatureHelp((params) => {
     // tokens.shift()
     const currentTokenIndex = tokens.findIndex(token => position.character >= token.start && position.character <= token.end);
     console.log(currentTokenIndex);
-    if (currentTokenIndex === 0)
+    if (currentTokenIndex <= 0)
         return null;
     // let pos = 0
     // let lineTokens = lineText.trim().split(/\s+/).map(string => {

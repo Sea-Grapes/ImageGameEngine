@@ -141,7 +141,7 @@ ws.onSignatureHelp((params: SignatureHelpParams) => {
 
   console.log(currentTokenIndex)
 
-  if(currentTokenIndex === 0) return null
+  if(currentTokenIndex <= 0) return null
 
 
   // let pos = 0
