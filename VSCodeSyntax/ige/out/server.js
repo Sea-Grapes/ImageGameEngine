@@ -4,14 +4,10 @@ const vscode_languageserver_textdocument_1 = require("vscode-languageserver-text
 const node_1 = require("vscode-languageserver/node");
 const fs = require("fs");
 const path = require("path");
-try {
-    console.log(__dirname);
-    const yaml_data = fs.readdirSync(path.join(__dirname, './'));
-    console.log(yaml_data);
-}
-catch (e) {
-    console.log('yaml read failed');
-}
+const YAML = require("yaml");
+const basepath = path.resolve(__dirname, '..');
+const read = path => fs.readFileSync(path.join(basepath, path), 'utf-8');
+const config = YAML.parse(read('data/config.yaml'));
 const ws = (0, node_1.createConnection)(node_1.ProposedFeatures.all);
 const documents = new node_1.TextDocuments(vscode_languageserver_textdocument_1.TextDocument);
 ws.onInitialize(() => {

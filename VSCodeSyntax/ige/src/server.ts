@@ -2,22 +2,16 @@ import { TextDocument } from 'vscode-languageserver-textdocument'
 import { CompletionItem, CompletionItemKind, CompletionParams, CompletionTriggerKind, createConnection, InitializeResult, InsertTextFormat, MarkupKind, ProposedFeatures, SignatureHelpParams, TextDocuments, TextDocumentSyncKind } from 'vscode-languageserver/node'
 import * as fs from 'fs'
 import * as path from 'path'
+import * as YAML from 'yaml'
 
-
-try {
-  console.log(__dirname)
-  const yaml_data = fs.readdirSync(path.join(__dirname, './'))
-  console.log(yaml_data)
-} catch(e) {
-  console.log('yaml read failed')
-}
+const basepath = path.resolve(__dirname, '..')
+const read = path => fs.readFileSync(path.join(basepath, path), 'utf-8')
+const config = YAML.parse(read('data/config.yaml'))
 
 const ws = createConnection(ProposedFeatures.all)
-
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument)
 
 ws.onInitialize((): InitializeResult => {
-
   console.log('[IGE SERVER] active')
 
   const numberTriggers = Array.from({length: 10}, (v, i) => i.toString())
