@@ -32,7 +32,18 @@ ws.onInitialize(() => {
     };
 });
 const config = YAML.parse(read('data/config.yaml'));
-const docs = read('data/docs.md');
+function parseDocs(input) {
+    const data = input.trim().split(/@(\w+)/).filter(Boolean);
+    const res = {};
+    for (let i = 0; i < data.length; i += 2) {
+        const key = data[i];
+        const value = data[i + 1].trim();
+        res[key] = value;
+    }
+    return res;
+}
+const docs = parseDocs(read('data/docs.md'));
+console.log(docs);
 const compData = Object.entries(config).map(([triggerString, data]) => {
     let res = {
         label: triggerString,
@@ -40,8 +51,12 @@ const compData = Object.entries(config).map(([triggerString, data]) => {
         detail: data.title,
         documentation: {
             kind: node_1.MarkupKind.Markdown,
-            value: data.description
+            value: docs[triggerString] || 'Unknown'
         },
+        command: {
+            title: 'triggerParameterHints',
+            command: 'editor.action.triggerParameterHints'
+        }
     };
     if (data.snippet) {
         res.insertTextFormat = node_1.InsertTextFormat.Snippet;

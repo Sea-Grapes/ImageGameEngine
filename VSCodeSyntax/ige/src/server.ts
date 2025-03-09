@@ -37,8 +37,26 @@ ws.onInitialize((): InitializeResult => {
   }
 })
 
+
 const config: Record<string, CompDataObject> = YAML.parse(read('data/config.yaml'))
-const docs = read('data/docs.md')
+
+
+function parseDocs(input: string): Record<string, string> {
+  const data = input.trim().split(/@(\w+)/).filter(Boolean)
+  const res = {}
+
+  for (let i = 0; i < data.length; i += 2) {
+    const key = data[i]
+    const value = data[i + 1].trim()
+    res[key] = value
+  }
+
+  return res
+}
+
+const docs = parseDocs(read('data/docs.md'))
+
+console.log(docs)
 
 type CompDataObject = {
   title: string;
@@ -53,8 +71,12 @@ const compData = Object.entries(config).map(([triggerString, data ]): Completion
     detail: data.title,
     documentation: {
       kind: MarkupKind.Markdown,
-      value: data.description
+      value: docs[triggerString] || 'Unknown'
     },
+    command: {
+      title: 'triggerParameterHints',
+      command: 'editor.action.triggerParameterHints'
+    }
     
   }
 
