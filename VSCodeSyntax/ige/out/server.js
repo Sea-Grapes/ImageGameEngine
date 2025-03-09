@@ -152,6 +152,7 @@ ws.onSignatureHelp((params) => {
         };
     });
     const currentTokenIndex = tokens.findIndex(token => position.character >= token.start && position.character <= token.end);
+    // if we're in first token, quit
     if (currentTokenIndex <= 0)
         return null;
     let currentParameterIndex = currentTokenIndex - 1;
