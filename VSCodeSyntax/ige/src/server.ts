@@ -58,7 +58,7 @@ const docs = parseDocs(read('data/docs.md'))
 
 interface CompDataObject {
   title: string
-  type: string
+  type: CompletionItemKind
   description: string
   snippet?: string
 }
@@ -66,21 +66,21 @@ interface CompDataObject {
 const completionData = Object.entries(config).map(([triggerString, data ]): CompletionItem => {
   let res: CompletionItem = {
     label: triggerString,
-    kind: CompletionItemKind.Keyword,
+    kind: data.type ?? CompletionItemKind.Function,
     detail: data.title,
     documentation: {
       kind: MarkupKind.Markdown,
-      value: docs[triggerString] || 'Unknown'
+      value: docs[triggerString] ?? 'Unknown'
     }    
   }
 
-  if(data.type === 'function') {
-    res.kind = CompletionItemKind.Function
+  if(data.type === CompletionItemKind.Function) {
     res.command = {
       title: 'triggerParameterHints',
       command: 'editor.action.triggerParameterHints'
     }
   }
+
 
   if(data.snippet) {
     res.insertTextFormat = InsertTextFormat.Snippet

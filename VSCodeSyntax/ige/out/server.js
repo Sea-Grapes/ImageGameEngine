@@ -41,27 +41,24 @@ function parseDocs(input) {
     }
     return res;
 }
-const docs = parseDocs(read('data/docs.md'));
 const config = YAML.parse(read('data/config.yaml'));
-const data = Object.fromEntries(Object.entries(config).map(([triggerString, data]) => [
-    triggerString,
-    {}
-]));
-console.log(data);
-const compData = Object.entries(config).map(([triggerString, data]) => {
+const docs = parseDocs(read('data/docs.md'));
+const completionData = Object.entries(config).map(([triggerString, data]) => {
     let res = {
         label: triggerString,
-        kind: node_1.CompletionItemKind.Function,
+        kind: data.type ?? node_1.CompletionItemKind.Function,
         detail: data.title,
         documentation: {
             kind: node_1.MarkupKind.Markdown,
-            value: docs[triggerString] || 'Unknown'
-        },
-        command: {
-            title: 'triggerParameterHints',
-            command: 'editor.action.triggerParameterHints'
+            value: docs[triggerString] ?? 'Unknown'
         }
     };
+    if (data.type === node_1.CompletionItemKind.Function) {
+        res.command = {
+            title: 'triggerParameterHints',
+            command: 'editor.action.triggerParameterHints'
+        };
+    }
     if (data.snippet) {
         res.insertTextFormat = node_1.InsertTextFormat.Snippet;
         res.insertText = data.snippet;
@@ -82,7 +79,7 @@ ws.onCompletion((params) => {
     const isCursorInFirstWord = lineStart.trim().split(/\s+/).length <= 1;
     if (!isCursorInFirstWord)
         return [];
-    return compData;
+    return completionData;
     /*return [
       {
         label: '40',
