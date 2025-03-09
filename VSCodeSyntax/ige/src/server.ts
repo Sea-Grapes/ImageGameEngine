@@ -38,7 +38,6 @@ ws.onInitialize((): InitializeResult => {
 })
 
 
-const config: Record<string, CompDataObject> = YAML.parse(read('data/config.yaml'))
 
 
 function parseDocs(input: string): Record<string, string> {
@@ -56,12 +55,36 @@ function parseDocs(input: string): Record<string, string> {
 
 const docs = parseDocs(read('data/docs.md'))
 
-console.log(docs)
+
+
+const config: Record<string, CompDataObject> = YAML.parse(read('data/config.yaml'))
 
 type CompDataObject = {
   title: string;
   description: string;
   snippet?: string;
+}
+
+
+interface KeywordData {
+  title: string;
+  docs: string;
+  snippet?: string;
+
+  completion?: {
+    title?: string;
+    docs?: string;
+  }
+
+  signature?: {
+    title?: string;
+    docs?: string;
+  }
+
+  parameters?: {
+    
+  }
+
 }
 
 const compData = Object.entries(config).map(([triggerString, data ]): CompletionItem => {

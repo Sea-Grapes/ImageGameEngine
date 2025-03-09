@@ -31,7 +31,6 @@ ws.onInitialize(() => {
         }
     };
 });
-const config = YAML.parse(read('data/config.yaml'));
 function parseDocs(input) {
     const data = input.trim().split(/@(\w+)/).filter(Boolean);
     const res = {};
@@ -43,7 +42,7 @@ function parseDocs(input) {
     return res;
 }
 const docs = parseDocs(read('data/docs.md'));
-console.log(docs);
+const config = YAML.parse(read('data/config.yaml'));
 const compData = Object.entries(config).map(([triggerString, data]) => {
     let res = {
         label: triggerString,
