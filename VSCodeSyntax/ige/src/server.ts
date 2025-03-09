@@ -38,6 +38,7 @@ ws.onInitialize((): InitializeResult => {
 })
 
 const config: Record<string, CompDataObject> = YAML.parse(read('data/config.yaml'))
+const docs = read('data/docs.md')
 
 type CompDataObject = {
   title: string;
@@ -84,7 +85,9 @@ ws.onCompletion((params: CompletionParams): CompletionItem[] => {
   const isCursorInFirstWord = lineStart.trim().split(/\s+/).length <= 1
   if(!isCursorInFirstWord) return []
 
-  return [
+  return compData
+
+  /*return [
     {
       label: '40',
       kind: CompletionItemKind.Function,
@@ -133,7 +136,7 @@ ws.onCompletion((params: CompletionParams): CompletionItem[] => {
         value: 'Todo'
       }
     }
-  ]
+  ]*/
 })
 
 

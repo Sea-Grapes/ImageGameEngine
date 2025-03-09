@@ -32,6 +32,7 @@ ws.onInitialize(() => {
     };
 });
 const config = YAML.parse(read('data/config.yaml'));
+const docs = read('data/docs.md');
 const compData = Object.entries(config).map(([triggerString, data]) => {
     let res = {
         label: triggerString,
@@ -62,56 +63,57 @@ ws.onCompletion((params) => {
     const isCursorInFirstWord = lineStart.trim().split(/\s+/).length <= 1;
     if (!isCursorInFirstWord)
         return [];
-    return [
-        {
-            label: '40',
-            kind: node_1.CompletionItemKind.Function,
-            detail: '(method) 0x40 Goto function',
-            documentation: {
-                kind: node_1.MarkupKind.Markdown,
-                value: `Goes to the specified address.`
-            },
-            insertTextFormat: node_1.InsertTextFormat.Snippet,
-            insertText: "40 ${1:00} ${2:00}",
-            command: {
-                title: 'triggerParameterHints',
-                command: 'editor.action.triggerParameterHints'
-            }
+    return compData;
+    /*return [
+      {
+        label: '40',
+        kind: CompletionItemKind.Function,
+        detail: '(method) 0x40 Goto function',
+        documentation: {
+          kind: MarkupKind.Markdown,
+          value: `Goes to the specified address.`
         },
-        {
-            label: 'B0',
-            kind: node_1.CompletionItemKind.Function,
-            detail: '(method) 0xB0 Write',
-            documentation: {
-                kind: node_1.MarkupKind.Markdown,
-                value: 'Writes a singular pixel value to a specific address.'
-            },
-            insertTextFormat: node_1.InsertTextFormat.Snippet,
-            insertText: 'B0 ${1:00} ${2:00}',
-            command: {
-                title: 'triggerParameterHints',
-                command: 'editor.action.triggerParameterHints'
-            }
-        },
-        {
-            label: 'A0',
-            kind: node_1.CompletionItemKind.Function,
-            detail: 'Value mode',
-            documentation: {
-                kind: node_1.MarkupKind.Markdown,
-                value: 'Todo'
-            },
-        },
-        {
-            label: 'A1',
-            kind: node_1.CompletionItemKind.Function,
-            detail: 'Variable mode',
-            documentation: {
-                kind: node_1.MarkupKind.Markdown,
-                value: 'Todo'
-            }
+        insertTextFormat: InsertTextFormat.Snippet,
+        insertText: "40 ${1:00} ${2:00}",
+        command: {
+          title: 'triggerParameterHints',
+          command: 'editor.action.triggerParameterHints'
         }
-    ];
+      },
+      {
+        label: 'B0',
+        kind: CompletionItemKind.Function,
+        detail: '(method) 0xB0 Write',
+        documentation: {
+          kind: MarkupKind.Markdown,
+          value: 'Writes a singular pixel value to a specific address.'
+        },
+        insertTextFormat: InsertTextFormat.Snippet,
+        insertText: 'B0 ${1:00} ${2:00}',
+        command: {
+          title: 'triggerParameterHints',
+          command: 'editor.action.triggerParameterHints'
+        }
+      },
+      {
+        label: 'A0',
+        kind: CompletionItemKind.Function,
+        detail: 'Value mode',
+        documentation: {
+          kind: MarkupKind.Markdown,
+          value: 'Todo'
+        },
+      },
+      {
+        label: 'A1',
+        kind: CompletionItemKind.Function,
+        detail: 'Variable mode',
+        documentation: {
+          kind: MarkupKind.Markdown,
+          value: 'Todo'
+        }
+      }
+    ]*/
 });
 ws.onCompletionResolve((item) => {
     return item;
