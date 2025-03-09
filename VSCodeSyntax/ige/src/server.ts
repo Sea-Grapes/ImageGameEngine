@@ -60,32 +60,48 @@ const docs = parseDocs(read('data/docs.md'))
 const config: Record<string, CompDataObject> = YAML.parse(read('data/config.yaml'))
 
 type CompDataObject = {
-  title: string;
-  description: string;
-  snippet?: string;
+  title: string
+  description: string
+  snippet?: string
 }
 
 
 interface KeywordData {
-  title: string;
-  docs: string;
-  snippet?: string;
+  triggerString
+  title: string
+  docs: string
+  snippet?: string
 
   completion?: {
-    title?: string;
-    docs?: string;
+    title?: string
+    docs?: string
   }
 
   signature?: {
-    title?: string;
-    docs?: string;
+    title?: string
+    docs?: string
   }
 
-  parameters?: {
-    
-  }
+  parameters?: ParameterInfo[]
 
 }
+
+interface ParameterInfo {
+  name: string
+  docs: string
+}
+
+// const data: KeywordData[] = Object.fromEntries(
+//   Object.entries(config).map(([triggerString, data]) => [
+//     triggerString,
+//     {
+
+//     }
+//   ])
+// )
+
+// console.log(data)
+
 
 const compData = Object.entries(config).map(([triggerString, data ]): CompletionItem => {
   let res: CompletionItem = {

@@ -43,6 +43,11 @@ function parseDocs(input) {
 }
 const docs = parseDocs(read('data/docs.md'));
 const config = YAML.parse(read('data/config.yaml'));
+const data = Object.fromEntries(Object.entries(config).map(([triggerString, data]) => [
+    triggerString,
+    {}
+]));
+console.log(data);
 const compData = Object.entries(config).map(([triggerString, data]) => {
     let res = {
         label: triggerString,
