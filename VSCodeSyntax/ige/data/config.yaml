@@ -7,9 +7,3 @@
   parameters:
     X: 'x coordinate'
     Y: 'y coordinate'
-
-
-'setup':
-  title: '(snippet) setup'
-  description: 'Default project setup snippet.'
-  snippet: '@setup/snippet'

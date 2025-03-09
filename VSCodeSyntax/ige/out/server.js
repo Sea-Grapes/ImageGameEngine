@@ -31,7 +31,7 @@ ws.onInitialize(() => {
         }
     };
 });
-function parseDocs(input) {
+function parseSections(input) {
     const data = input.trim().split(/@(\w+)/).filter(Boolean);
     const res = {};
     for (let i = 0; i < data.length; i += 2) {
@@ -42,7 +42,7 @@ function parseDocs(input) {
     return res;
 }
 const config = YAML.parse(read('data/config.yaml'));
-const docs = parseDocs(read('data/docs.md'));
+const docs = parseSections(read('data/docs.md'));
 const completionData = Object.entries(config).map(([triggerString, data]) => {
     let res = {
         label: triggerString,

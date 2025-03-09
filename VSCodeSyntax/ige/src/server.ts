@@ -40,7 +40,7 @@ ws.onInitialize((): InitializeResult => {
 
 
 
-function parseDocs(input: string): Record<string, string> {
+function parseSections(input: string): Record<string, string> {
   const data = input.trim().split(/@(\w+)/).filter(Boolean)
   const res = {}
 
@@ -54,7 +54,7 @@ function parseDocs(input: string): Record<string, string> {
 }
 
 const config: Record<string, CompDataObject> = YAML.parse(read('data/config.yaml'))
-const docs = parseDocs(read('data/docs.md'))
+const docs = parseSections(read('data/docs.md'))
 
 interface CompDataObject {
   title: string
