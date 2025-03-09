@@ -53,70 +53,33 @@ function parseDocs(input: string): Record<string, string> {
   return res
 }
 
+const config: Record<string, CompDataObject> = YAML.parse(read('data/config.yaml'))
 const docs = parseDocs(read('data/docs.md'))
 
-
-
-const config: Record<string, CompDataObject> = YAML.parse(read('data/config.yaml'))
-
-type CompDataObject = {
+interface CompDataObject {
   title: string
+  type: string
   description: string
   snippet?: string
 }
 
-
-interface KeywordData {
-  triggerString
-  title: string
-  docs: string
-  snippet?: string
-
-  completion?: {
-    title?: string
-    docs?: string
-  }
-
-  signature?: {
-    title?: string
-    docs?: string
-  }
-
-  parameters?: ParameterInfo[]
-
-}
-
-interface ParameterInfo {
-  name: string
-  docs: string
-}
-
-// const data: KeywordData[] = Object.fromEntries(
-//   Object.entries(config).map(([triggerString, data]) => [
-//     triggerString,
-//     {
-
-//     }
-//   ])
-// )
-
-// console.log(data)
-
-
-const compData = Object.entries(config).map(([triggerString, data ]): CompletionItem => {
+const completionData = Object.entries(config).map(([triggerString, data ]): CompletionItem => {
   let res: CompletionItem = {
     label: triggerString,
-    kind: CompletionItemKind.Function,
+    kind: CompletionItemKind.Keyword,
     detail: data.title,
     documentation: {
       kind: MarkupKind.Markdown,
       value: docs[triggerString] || 'Unknown'
-    },
-    command: {
+    }    
+  }
+
+  if(data.type === 'function') {
+    res.kind = CompletionItemKind.Function
+    res.command = {
       title: 'triggerParameterHints',
       command: 'editor.action.triggerParameterHints'
     }
-    
   }
 
   if(data.snippet) {
@@ -146,7 +109,7 @@ ws.onCompletion((params: CompletionParams): CompletionItem[] => {
   const isCursorInFirstWord = lineStart.trim().split(/\s+/).length <= 1
   if(!isCursorInFirstWord) return []
 
-  return compData
+  return completionData
 
   /*return [
     {
