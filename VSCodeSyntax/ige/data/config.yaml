@@ -2,6 +2,11 @@
   title: '(method) 0x40: Goto function'
   description: '@40'
 
+  parameters:
+    X: 'x coordinate'
+    Y: 'y coordinate'
+
+
 'setup':
   title: '(snippet) setup'
   description: 'Default project setup snippet.'

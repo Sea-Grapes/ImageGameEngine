@@ -5,8 +5,8 @@ import * as path from 'path'
 import * as YAML from 'yaml'
 
 const basepath = path.resolve(__dirname, '..')
-const read = path => fs.readFileSync(path.join(basepath, path), 'utf-8')
-const config = YAML.parse(read('data/config.yaml'))
+const read = file => fs.readFileSync(path.join(basepath, file), 'utf-8')
+
 
 const ws = createConnection(ProposedFeatures.all)
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument)
@@ -37,7 +37,35 @@ ws.onInitialize((): InitializeResult => {
   }
 })
 
-ws.onCompletion((params: CompletionParams) => {
+const config: Record<string, CompDataObject> = YAML.parse(read('data/config.yaml'))
+
+type CompDataObject = {
+  title: string;
+  description: string;
+  snippet?: string;
+}
+
+const compData = Object.entries(config).map(([triggerString, data ]): CompletionItem => {
+  let res: CompletionItem = {
+    label: triggerString,
+    kind: CompletionItemKind.Function,
+    detail: data.title,
+    documentation: {
+      kind: MarkupKind.Markdown,
+      value: data.description
+    },
+    
+  }
+
+  if(data.snippet) {
+    res.insertTextFormat = InsertTextFormat.Snippet
+    res.insertText = data.snippet
+  }
+
+  return res
+})
+
+ws.onCompletion((params: CompletionParams): CompletionItem[] => {
 
   const doc = documents.get(params.textDocument.uri)
   

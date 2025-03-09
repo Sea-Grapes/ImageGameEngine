@@ -6,8 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const YAML = require("yaml");
 const basepath = path.resolve(__dirname, '..');
-const read = path => fs.readFileSync(path.join(basepath, path), 'utf-8');
-const config = YAML.parse(read('data/config.yaml'));
+const read = file => fs.readFileSync(path.join(basepath, file), 'utf-8');
 const ws = (0, node_1.createConnection)(node_1.ProposedFeatures.all);
 const documents = new node_1.TextDocuments(vscode_languageserver_textdocument_1.TextDocument);
 ws.onInitialize(() => {
@@ -31,6 +30,23 @@ ws.onInitialize(() => {
             }
         }
     };
+});
+const config = YAML.parse(read('data/config.yaml'));
+const compData = Object.entries(config).map(([triggerString, data]) => {
+    let res = {
+        label: triggerString,
+        kind: node_1.CompletionItemKind.Function,
+        detail: data.title,
+        documentation: {
+            kind: node_1.MarkupKind.Markdown,
+            value: data.description
+        },
+    };
+    if (data.snippet) {
+        res.insertTextFormat = node_1.InsertTextFormat.Snippet;
+        res.insertText = data.snippet;
+    }
+    return res;
 });
 ws.onCompletion((params) => {
     const doc = documents.get(params.textDocument.uri);
