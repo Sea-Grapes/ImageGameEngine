@@ -38,8 +38,6 @@ ws.onInitialize((): InitializeResult => {
 })
 
 
-
-
 function parseSections(input: string): Record<string, string> {
   const data = input.trim().split(/@(\w+)/).filter(Boolean)
   const res = {}
