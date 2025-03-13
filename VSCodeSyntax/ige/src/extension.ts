@@ -32,7 +32,7 @@ export function activate(context: ExtensionContext) {
   client.onDidChangeState(event => {
     if(event.newState === State.Running) {
       console.log('[IGE CLIENT] active')
-      window.showInformationMessage('ige enabled')
+      window.showInformationMessage(`ige enabled`)
     }
   })
 
