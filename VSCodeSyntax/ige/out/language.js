@@ -2,13 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.completionData = void 0;
 const node_1 = require("vscode-languageserver/node");
-const fs = require("fs");
-const path = require("path");
 const parser_1 = require("./parser");
-const basepath = path.resolve(__dirname, '..');
-const read = file => fs.readFileSync(path.join(basepath, file), 'utf-8');
-const docs = (0, parser_1.parseRegions)(read('data/docs.md'));
-const snippets = (0, parser_1.parseRegions)(read('data/snippets.ige'));
+const utils_1 = require("./utils");
+const docs = (0, parser_1.parseRegions)((0, utils_1.read)('data/docs.md'));
+const snippets = (0, parser_1.parseRegions)((0, utils_1.read)('data/snippets.ige'));
 exports.completionData = [
     {
         label: '40',

@@ -1,13 +1,6 @@
 import { CompletionItem, CompletionItemKind, InsertTextFormat, MarkupKind } from 'vscode-languageserver/node'
-
-
-
-import * as fs from 'fs'
-import * as path from 'path'
 import { parseRegions } from "./parser"
-
-const basepath = path.resolve(__dirname, '..')
-const read = file => fs.readFileSync(path.join(basepath, file), 'utf-8')
+import { read } from './utils'
 
 const docs = parseRegions(read('data/docs.md'))
 const snippets = parseRegions(read('data/snippets.ige'))
