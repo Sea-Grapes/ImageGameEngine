@@ -4,6 +4,7 @@ const vscode_languageserver_textdocument_1 = require("vscode-languageserver-text
 const node_1 = require("vscode-languageserver/node");
 const fs = require("fs");
 const path = require("path");
+const parser_1 = require("./parser");
 const ws = (0, node_1.createConnection)(node_1.ProposedFeatures.all);
 const documents = new node_1.TextDocuments(vscode_languageserver_textdocument_1.TextDocument);
 ws.onInitialize(() => {
@@ -30,44 +31,8 @@ ws.onInitialize(() => {
 });
 const basepath = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(basepath, file), 'utf-8');
-function parseSections(input) {
-    const data = input.trim().split(/@(\w+)/).filter(Boolean);
-    const res = {};
-    for (let i = 0; i < data.length; i += 2) {
-        const key = data[i];
-        const value = data[i + 1].trim();
-        res[key] = value;
-    }
-    return res;
-}
-function parseRegions(input) {
-    const lines = input.split(/\r?\n/);
-    const regions = {};
-    let activeRegion = null;
-    for (const line of lines) {
-        if (line.startsWith('#region')) {
-            if (activeRegion)
-                regions[activeRegion.name] = activeRegion.lines.join('\n').trim();
-            activeRegion = {
-                name: line.replace('#region', '').trim(),
-                lines: []
-            };
-        }
-        else if (line.startsWith('#endregion') && activeRegion) {
-            regions[activeRegion.name] = activeRegion.lines.join('\n');
-            activeRegion = null;
-        }
-        else if (activeRegion) {
-            activeRegion.lines.push(line);
-        }
-    }
-    if (activeRegion) {
-        regions[activeRegion.name] = activeRegion.lines.join('\n').trim();
-    }
-    return regions;
-}
-const docs = parseSections(read('data/docs.md'));
-const snippets = parseSections(read('data/snippets.ige'));
+const docs = (0, parser_1.parseRegions)(read('data/docs.md'));
+const snippets = (0, parser_1.parseRegions)(read('data/snippets.ige'));
 const completionData = [
     {
         label: '40',

@@ -1,3 +1,5 @@
 
-
-40 10 20
+# setup initial state
+PATCH|FE FE|00 40 00 # screen size
+PATCH|FF FE|00 00 00 # screen position
+FILL|00 FF|FF FF|00 00 00 # clear call stack

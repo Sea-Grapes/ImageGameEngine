@@ -3,6 +3,7 @@ import { CompletionItem, CompletionItemKind, CompletionParams, CompletionTrigger
 import * as fs from 'fs'
 import * as path from 'path'
 import * as YAML from 'yaml'
+import { parseRegions } from './parser'
 
 
 const ws = createConnection(ProposedFeatures.all)
@@ -37,56 +38,8 @@ ws.onInitialize((): InitializeResult => {
 const basepath = path.resolve(__dirname, '..')
 const read = file => fs.readFileSync(path.join(basepath, file), 'utf-8')
 
-function parseSections(input: string): Record<string, string> {
-  const data = input.trim().split(/@(\w+)/).filter(Boolean)
-  const res = {}
-
-  for (let i = 0; i < data.length; i += 2) {
-    const key = data[i]
-    const value = data[i + 1].trim()
-    res[key] = value
-  }
-
-  return res
-}
-
-function parseRegions(input: string): Record<string, string> {
-
-  const lines = input.split(/\r?\n/)
-  const regions = {}
-  let activeRegion: { name: string, lines: string[] } | null = null;
-
-  for(const line of lines) {
-    if(line.startsWith('#region')) {
-      if(activeRegion) regions[activeRegion.name] = activeRegion.lines.join('\n').trim()
-
-      activeRegion = {
-        name: line.replace('#region', '').trim(),
-        lines: []
-      }
-    }
-
-    else if(line.startsWith('#endregion') && activeRegion) {
-      regions[activeRegion.name] = activeRegion.lines.join('\n')
-      activeRegion = null
-    }
-
-    else if(activeRegion) {
-      activeRegion.lines.push(line)
-    }
-    
-  }
-
-  if(activeRegion) {
-    regions[activeRegion.name] = activeRegion.lines.join('\n').trim()
-  }
-
-  return regions
-
-}
-
-const docs = parseSections(read('data/docs.md'))
-const snippets = parseSections(read('data/snippets.ige'))
+const docs = parseRegions(read('data/docs.md'))
+const snippets = parseRegions(read('data/snippets.ige'))
 
 
 const completionData: CompletionItem[] = [
