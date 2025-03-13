@@ -49,8 +49,10 @@ ws.onCompletionResolve((item) => {
 ws.onSignatureHelp((params) => {
     // see if cursor inside a parameter
     // this is purely for methods parameters
+    const { context } = params;
+    const { activeSignatureHelp } = context;
     console.log('EVT: signature');
-    console.log(params.context.activeSignatureHelp);
+    // console.log(activeSignatureHelp)
     const doc = documents.get(params.textDocument.uri);
     const position = params.position;
     let lineText = doc.getText({
@@ -73,18 +75,18 @@ ws.onSignatureHelp((params) => {
     let firstToken = tokens[0].string.trim();
     if (!language_1.signatureData[firstToken])
         return null;
-    let currentParameterIndex = currentTokenIndex - 1;
     // fill this in with real value later
     // possibly, check what the activeSignature is
     // and clamp the parameter count to this
-    let numOfParams = 2;
+    let currentParameterIndex = currentTokenIndex - 1;
+    let numOfParams = activeSignatureHelp?.signatures[activeSignatureHelp.activeSignature].parameters.length;
     if (currentParameterIndex >= numOfParams)
         return null;
     let currentData = language_1.signatureData[firstToken];
     if (!Array.isArray(currentData))
         currentData = [currentData];
     return {
-        activeSignature: params.context.activeSignatureHelp?.activeSignature,
+        activeSignature: activeSignatureHelp?.activeSignature,
         activeParameter: currentParameterIndex,
         signatures: currentData
     };
