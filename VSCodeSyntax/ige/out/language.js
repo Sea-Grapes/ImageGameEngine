@@ -21,7 +21,7 @@ exports.completionData = [
             value: docs['40']
         },
         insertTextFormat: node_1.InsertTextFormat.Snippet,
-        insertText: "40 ${1:00} ${2:00}",
+        insertText: "40 ${1:00} ${0:00}",
         command: signatureHelpCommand
     },
     {
@@ -33,7 +33,7 @@ exports.completionData = [
             value: 'Writes a singular pixel value to a specific address.'
         },
         insertTextFormat: node_1.InsertTextFormat.Snippet,
-        insertText: 'B0 ${1:00} ${2:00}',
+        insertText: 'B0 ${1:00} ${0:00}',
         command: signatureHelpCommand
     },
     {
@@ -63,34 +63,16 @@ exports.completionData = [
     }
 ];
 exports.signatureData = {
-    '40': [
-        {
-            label: '40 X Y',
-            documentation: {
-                kind: node_1.MarkupKind.Markdown,
-                value: docs['40']
-            },
-            parameters: [
-                {
-                    label: 'X',
-                },
-                {
-                    label: 'Y',
-                }
-            ]
+    '40': {
+        label: '40 X Y',
+        documentation: {
+            kind: node_1.MarkupKind.Markdown,
+            value: docs['40']
         },
-        {
-            label: '40 X Y Z',
-            documentation: {
-                kind: node_1.MarkupKind.Markdown,
-                value: docs['40']
-            },
-            parameters: [
-                { label: 'X' },
-                { label: 'Y' },
-                { label: 'Z' },
-            ]
-        }
-    ]
+        parameters: [
+            { label: 'X' },
+            { label: 'Y' }
+        ]
+    },
 };
 //# sourceMappingURL=language.js.map

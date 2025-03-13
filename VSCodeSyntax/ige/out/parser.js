@@ -10,7 +10,7 @@ function parseRegions(input) {
             if (activeRegion)
                 regions[activeRegion.name] = activeRegion.lines.join('\n').trim();
             activeRegion = {
-                name: line.replace('#region', '').trim(),
+                name: line.replace('#region', '').match(/\w+/)[0].trim(),
                 lines: []
             };
         }
