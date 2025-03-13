@@ -63,19 +63,34 @@ exports.completionData = [
     }
 ];
 exports.signatureData = {
-    '40': {
-        label: '40 x y',
-        documentation: docs['40'],
-        parameters: [
-            {
-                label: 'x',
-                documentation: 'x coordinate'
+    '40': [
+        {
+            label: '40 X Y',
+            documentation: {
+                kind: node_1.MarkupKind.Markdown,
+                value: docs['40']
             },
-            {
-                label: 'y',
-                documentation: 'y coordinate'
-            }
-        ]
-    }
+            parameters: [
+                {
+                    label: 'X',
+                },
+                {
+                    label: 'Y',
+                }
+            ]
+        },
+        {
+            label: '40 X Y Z',
+            documentation: {
+                kind: node_1.MarkupKind.Markdown,
+                value: docs['40']
+            },
+            parameters: [
+                { label: 'X' },
+                { label: 'Y' },
+                { label: 'Z' },
+            ]
+        }
+    ]
 };
 //# sourceMappingURL=language.js.map

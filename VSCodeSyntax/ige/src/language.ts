@@ -66,18 +66,33 @@ export const completionData: CompletionItem[] = [
 
 
 export const signatureData: Record<string, SignatureInformation | SignatureInformation[]> = {
-  '40': {
-    label: '40 x y',
-    documentation: docs['40'],
-    parameters: [
-      {
-        label: 'x',
-        documentation: 'x coordinate'
+  '40': [
+    {
+      label: '40 X Y',
+      documentation: {
+        kind: MarkupKind.Markdown,
+        value: docs['40']
       },
-      {
-        label: 'y',
-        documentation: 'y coordinate'
-      }
-    ]
-  }
+      parameters: [
+        {
+          label: 'X',
+        },
+        {
+          label: 'Y',
+        }
+      ]
+    },
+    {
+      label: '40 X Y Z',
+      documentation: {
+        kind: MarkupKind.Markdown,
+        value: docs['40']
+      },
+      parameters: [
+        { label: 'X' },
+        { label: 'Y' },
+        { label: 'Z' },
+      ]
+    }
+  ]
 }
