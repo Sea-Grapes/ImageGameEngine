@@ -1,5 +1,5 @@
 import { TextDocument } from 'vscode-languageserver-textdocument'
-import { CompletionItem, CompletionParams, createConnection, InitializeResult, ProposedFeatures, SignatureHelpParams, TextDocuments, TextDocumentSyncKind } from 'vscode-languageserver/node'
+import { CompletionItem, CompletionParams, createConnection, InitializeResult, ProposedFeatures, SignatureHelpParams, SignatureHelp, TextDocuments, TextDocumentSyncKind } from 'vscode-languageserver/node'
 
 import { completionData } from './language'
 
@@ -59,9 +59,10 @@ ws.onCompletionResolve((item: CompletionItem) => {
 })
 
 
-ws.onSignatureHelp((params: SignatureHelpParams) => {
+ws.onSignatureHelp((params: SignatureHelpParams): SignatureHelp => {
   // see if cursor inside a parameter
   // this is purely for methods parameters
+
 
   const doc = documents.get(params.textDocument.uri)
   const position = params.position
@@ -73,7 +74,7 @@ ws.onSignatureHelp((params: SignatureHelpParams) => {
 
   // let firstToken = lineText.match(/\S+/)[0]
 
-  let tokens = Array.from(lineText.trimStart().matchAll(/ *\S+|\s+/g)).map(token => {
+  let tokens = Array.from(lineText.matchAll(/ *\S+|\s+/g)).map(token => {
     return {
       string: token[0],
       start: token.index,

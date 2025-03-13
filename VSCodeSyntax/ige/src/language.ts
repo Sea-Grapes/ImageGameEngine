@@ -1,4 +1,4 @@
-import { CompletionItem, CompletionItemKind, InsertTextFormat, MarkupKind } from 'vscode-languageserver/node'
+import { CompletionItem, CompletionItemKind, InsertTextFormat, MarkupKind, SignatureInformation } from 'vscode-languageserver/node'
 import { parseRegions } from "./parser"
 import { read } from './utils'
 
@@ -63,3 +63,21 @@ export const completionData: CompletionItem[] = [
     insertText: snippets['setup']
   }
 ]
+
+
+export const signatureData: Record<string, SignatureInformation | SignatureInformation[]> = {
+  '40': {
+    label: '40 x y',
+    documentation: docs['40'],
+    parameters: [
+      {
+        label: 'x',
+        documentation: 'x coordinate'
+      },
+      {
+        label: 'y',
+        documentation: 'y coordinate'
+      }
+    ]
+  }
+}

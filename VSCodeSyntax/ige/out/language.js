@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.completionData = void 0;
+exports.signatureData = exports.completionData = void 0;
 const node_1 = require("vscode-languageserver/node");
 const parser_1 = require("./parser");
 const utils_1 = require("./utils");
@@ -62,4 +62,20 @@ exports.completionData = [
         insertText: snippets['setup']
     }
 ];
+exports.signatureData = {
+    '40': {
+        label: '40 x y',
+        documentation: docs['40'],
+        parameters: [
+            {
+                label: 'x',
+                documentation: 'x coordinate'
+            },
+            {
+                label: 'y',
+                documentation: 'y coordinate'
+            }
+        ]
+    }
+};
 //# sourceMappingURL=language.js.map

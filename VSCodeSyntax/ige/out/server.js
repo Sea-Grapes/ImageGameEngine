@@ -56,7 +56,7 @@ ws.onSignatureHelp((params) => {
         end: { line: position.line, character: Number.MAX_VALUE }
     });
     // let firstToken = lineText.match(/\S+/)[0]
-    let tokens = Array.from(lineText.trimStart().matchAll(/ *\S+|\s+/g)).map(token => {
+    let tokens = Array.from(lineText.matchAll(/ *\S+|\s+/g)).map(token => {
         return {
             string: token[0],
             start: token.index,
