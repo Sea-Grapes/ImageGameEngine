@@ -3,7 +3,6 @@ import { CompletionItem, CompletionParams, createConnection, InitializeResult, P
 
 import { completionData } from './language'
 
-
 const ws = createConnection(ProposedFeatures.all)
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument)
 

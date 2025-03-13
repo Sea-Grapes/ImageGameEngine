@@ -5,6 +5,12 @@ import { read } from './utils'
 const docs = parseRegions(read('data/docs.md'))
 const snippets = parseRegions(read('data/snippets.ige'))
 
+// if the function has parameters, upon completion resolve
+const signatureHelpCommand = {
+  title: 'triggerParameterHints',
+  command: 'editor.action.triggerParameterHints'
+}
+
 
 export const completionData: CompletionItem[] = [
   {
@@ -17,10 +23,7 @@ export const completionData: CompletionItem[] = [
     },
     insertTextFormat: InsertTextFormat.Snippet,
     insertText: "40 ${1:00} ${2:00}",
-    command: {
-      title: 'triggerParameterHints',
-      command: 'editor.action.triggerParameterHints'
-    }
+    command: signatureHelpCommand
   },
   {
     label: 'B0',
@@ -32,10 +35,7 @@ export const completionData: CompletionItem[] = [
     },
     insertTextFormat: InsertTextFormat.Snippet,
     insertText: 'B0 ${1:00} ${2:00}',
-    command: {
-      title: 'triggerParameterHints',
-      command: 'editor.action.triggerParameterHints'
-    }
+    command: signatureHelpCommand
   },
   {
     label: 'A0',

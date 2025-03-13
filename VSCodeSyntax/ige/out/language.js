@@ -6,6 +6,11 @@ const parser_1 = require("./parser");
 const utils_1 = require("./utils");
 const docs = (0, parser_1.parseRegions)((0, utils_1.read)('data/docs.md'));
 const snippets = (0, parser_1.parseRegions)((0, utils_1.read)('data/snippets.ige'));
+// if the function has parameters, upon completion resolve
+const signatureHelpCommand = {
+    title: 'triggerParameterHints',
+    command: 'editor.action.triggerParameterHints'
+};
 exports.completionData = [
     {
         label: '40',
@@ -17,10 +22,7 @@ exports.completionData = [
         },
         insertTextFormat: node_1.InsertTextFormat.Snippet,
         insertText: "40 ${1:00} ${2:00}",
-        command: {
-            title: 'triggerParameterHints',
-            command: 'editor.action.triggerParameterHints'
-        }
+        command: signatureHelpCommand
     },
     {
         label: 'B0',
@@ -32,10 +34,7 @@ exports.completionData = [
         },
         insertTextFormat: node_1.InsertTextFormat.Snippet,
         insertText: 'B0 ${1:00} ${2:00}',
-        command: {
-            title: 'triggerParameterHints',
-            command: 'editor.action.triggerParameterHints'
-        }
+        command: signatureHelpCommand
     },
     {
         label: 'A0',
