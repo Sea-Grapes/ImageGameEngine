@@ -1,4 +1,4 @@
-
+@setup
 
 # setup initial state
 PATCH|FE FE|00 40 00 # screen size

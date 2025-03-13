@@ -1,9 +1,0 @@
-'40':
-  title: '(method) 0x40: Goto function'
-  description: '@40'
-
-  snippet: '40 ${1:00} ${0:00}'
-
-  parameters:
-    X: 'x coordinate'
-    Y: 'y coordinate'

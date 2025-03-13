@@ -4,9 +4,6 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as YAML from 'yaml'
 
-const basepath = path.resolve(__dirname, '..')
-const read = file => fs.readFileSync(path.join(basepath, file), 'utf-8')
-
 
 const ws = createConnection(ProposedFeatures.all)
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument)
@@ -37,6 +34,8 @@ ws.onInitialize((): InitializeResult => {
   }
 })
 
+const basepath = path.resolve(__dirname, '..')
+const read = file => fs.readFileSync(path.join(basepath, file), 'utf-8')
 
 function parseSections(input: string): Record<string, string> {
   const data = input.trim().split(/@(\w+)/).filter(Boolean)
@@ -51,42 +50,67 @@ function parseSections(input: string): Record<string, string> {
   return res
 }
 
-const config: Record<string, CompDataObject> = YAML.parse(read('data/config.yaml'))
 const docs = parseSections(read('data/docs.md'))
+const snippets = parseSections(read('data/snippets.ige'))
 
-interface CompDataObject {
-  title: string
-  type: CompletionItemKind
-  description: string
-  snippet?: string
-}
 
-const completionData = Object.entries(config).map(([triggerString, data ]): CompletionItem => {
-  let res: CompletionItem = {
-    label: triggerString,
-    kind: data.type ?? CompletionItemKind.Function,
-    detail: data.title,
+const completionData: CompletionItem[] = [
+  {
+    label: '40',
+    kind: CompletionItemKind.Function,
+    detail: '(method) 0x40 Goto function',
     documentation: {
       kind: MarkupKind.Markdown,
-      value: docs[triggerString] ?? 'Unknown'
-    }    
-  }
-
-  if(data.type === CompletionItemKind.Function) {
-    res.command = {
+      value: docs['40']
+    },
+    insertTextFormat: InsertTextFormat.Snippet,
+    insertText: "40 ${1:00} ${2:00}",
+    command: {
       title: 'triggerParameterHints',
       command: 'editor.action.triggerParameterHints'
     }
+  },
+  {
+    label: 'B0',
+    kind: CompletionItemKind.Function,
+    detail: '(method) 0xB0 Write',
+    documentation: {
+      kind: MarkupKind.Markdown,
+      value: 'Writes a singular pixel value to a specific address.'
+    },
+    insertTextFormat: InsertTextFormat.Snippet,
+    insertText: 'B0 ${1:00} ${2:00}',
+    command: {
+      title: 'triggerParameterHints',
+      command: 'editor.action.triggerParameterHints'
+    }
+  },
+  {
+    label: 'A0',
+    kind: CompletionItemKind.Function,
+    detail: 'Value mode',
+    documentation: {
+      kind: MarkupKind.Markdown,
+      value: 'Todo'
+    },
+  },
+  {
+    label: 'A1',
+    kind: CompletionItemKind.Function,
+    detail: 'Variable mode',
+    documentation: {
+      kind: MarkupKind.Markdown,
+      value: 'Todo'
+    }
+  },
+  {
+    label: 'setup',
+    kind: CompletionItemKind.Property,
+    detail: '(snippet) default setup snippet',
+    insertTextFormat: InsertTextFormat.Snippet,
+    insertText: snippets['setup']
   }
-
-
-  if(data.snippet) {
-    res.insertTextFormat = InsertTextFormat.Snippet
-    res.insertText = data.snippet
-  }
-
-  return res
-})
+]
 
 ws.onCompletion((params: CompletionParams): CompletionItem[] => {
 
@@ -98,7 +122,6 @@ ws.onCompletion((params: CompletionParams): CompletionItem[] => {
     end: { line: position.line, character: Number.MAX_VALUE }
   })
 
-
   // get string from start to cursor
   const lineStart = lineText.slice(0, position.character)
 
@@ -108,65 +131,11 @@ ws.onCompletion((params: CompletionParams): CompletionItem[] => {
   if(!isCursorInFirstWord) return []
 
   return completionData
-
-  /*return [
-    {
-      label: '40',
-      kind: CompletionItemKind.Function,
-      detail: '(method) 0x40 Goto function',
-      documentation: {
-        kind: MarkupKind.Markdown,
-        value: `Goes to the specified address.`
-      },
-      insertTextFormat: InsertTextFormat.Snippet,
-      insertText: "40 ${1:00} ${2:00}",
-      command: {
-        title: 'triggerParameterHints',
-        command: 'editor.action.triggerParameterHints'
-      }
-    },
-    {
-      label: 'B0',
-      kind: CompletionItemKind.Function,
-      detail: '(method) 0xB0 Write',
-      documentation: {
-        kind: MarkupKind.Markdown,
-        value: 'Writes a singular pixel value to a specific address.'
-      },
-      insertTextFormat: InsertTextFormat.Snippet,
-      insertText: 'B0 ${1:00} ${2:00}',
-      command: {
-        title: 'triggerParameterHints',
-        command: 'editor.action.triggerParameterHints'
-      }
-    },
-    {
-      label: 'A0',
-      kind: CompletionItemKind.Function,
-      detail: 'Value mode',
-      documentation: {
-        kind: MarkupKind.Markdown,
-        value: 'Todo'
-      },
-    },
-    {
-      label: 'A1',
-      kind: CompletionItemKind.Function,
-      detail: 'Variable mode',
-      documentation: {
-        kind: MarkupKind.Markdown,
-        value: 'Todo'
-      }
-    }
-  ]*/
 })
-
-
 
 ws.onCompletionResolve((item: CompletionItem) => {
   return item
 })
-
 
 
 ws.onSignatureHelp((params: SignatureHelpParams) => {
