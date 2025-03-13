@@ -20,3 +20,7 @@ The output of lexing should be like
     end: 2
   }
 ]
+
+
+# shitty regex
+test.split(/(#region|#endregion)[ \t]*(\w*)/g)
