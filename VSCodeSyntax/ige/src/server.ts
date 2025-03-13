@@ -1,7 +1,7 @@
 import { TextDocument } from 'vscode-languageserver-textdocument'
 import { CompletionItem, CompletionParams, createConnection, InitializeResult, ProposedFeatures, SignatureHelpParams, SignatureHelp, TextDocuments, TextDocumentSyncKind } from 'vscode-languageserver/node'
 
-import { completionData } from './language'
+import { completionData, signatureData } from './language'
 
 const ws = createConnection(ProposedFeatures.all)
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument)
@@ -82,11 +82,13 @@ ws.onSignatureHelp((params: SignatureHelpParams): SignatureHelp => {
     }
   })
 
-  const currentTokenIndex = tokens.findIndex(token => position.character >= token.start && position.character <= token.end)
   // if we're in first token, quit
+  const currentTokenIndex = tokens.findIndex(token => position.character >= token.start && position.character <= token.end)
   if(currentTokenIndex <= 0) return null
 
-  
+  // if the first token has no signatures, quit
+  let firstToken = tokens[0].string.trim()
+  if(!signatureData[firstToken]) return null
 
   let currentParameterIndex = currentTokenIndex - 1
 
@@ -94,39 +96,13 @@ ws.onSignatureHelp((params: SignatureHelpParams): SignatureHelp => {
   let numOfParams = 2
   if(currentParameterIndex >= numOfParams) return null
 
+  let currentData = signatureData[firstToken]
+  if(!Array.isArray(currentData)) currentData = [currentData]
+
   
   return {
     activeParameter: currentParameterIndex,
-    signatures: [
-      {
-        label: '40 x y',
-        documentation: 'this is a test does this work',
-        parameters: [
-          {
-            label: 'x',
-            documentation: 'x coordinate'
-          },
-          {
-            label: 'y',
-            documentation: 'y coordinate'
-          }
-        ]
-      },
-      {
-        label: 'B0 x y',
-        documentation: 'Writes a singular pixel value to a specific address.',
-        parameters: [
-          {
-            label: 'x',
-            documentation: 'x coordinate'
-          },
-          {
-            label: 'y',
-            documentation: 'y coordinate'
-          }
-        ]
-      }
-    ]
+    signatures: currentData
   }
 })
 

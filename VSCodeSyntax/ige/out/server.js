@@ -63,47 +63,25 @@ ws.onSignatureHelp((params) => {
             end: token.index + token[0].length
         };
     });
-    const currentTokenIndex = tokens.findIndex(token => position.character >= token.start && position.character <= token.end);
     // if we're in first token, quit
+    const currentTokenIndex = tokens.findIndex(token => position.character >= token.start && position.character <= token.end);
     if (currentTokenIndex <= 0)
+        return null;
+    // if the first token has no signatures, quit
+    let firstToken = tokens[0].string.trim();
+    if (!language_1.signatureData[firstToken])
         return null;
     let currentParameterIndex = currentTokenIndex - 1;
     // fill this in with real value later
     let numOfParams = 2;
     if (currentParameterIndex >= numOfParams)
         return null;
+    let currentData = language_1.signatureData[firstToken];
+    if (!Array.isArray(currentData))
+        currentData = [currentData];
     return {
         activeParameter: currentParameterIndex,
-        signatures: [
-            {
-                label: '40 x y',
-                documentation: 'this is a test does this work',
-                parameters: [
-                    {
-                        label: 'x',
-                        documentation: 'x coordinate'
-                    },
-                    {
-                        label: 'y',
-                        documentation: 'y coordinate'
-                    }
-                ]
-            },
-            {
-                label: 'B0 x y',
-                documentation: 'Writes a singular pixel value to a specific address.',
-                parameters: [
-                    {
-                        label: 'x',
-                        documentation: 'x coordinate'
-                    },
-                    {
-                        label: 'y',
-                        documentation: 'y coordinate'
-                    }
-                ]
-            }
-        ]
+        signatures: currentData
     };
 });
 documents.listen(ws);
