@@ -12,7 +12,7 @@ const signatureHelpCommand = {
     title: 'triggerParameterHints',
     command: 'editor.action.triggerParameterHints'
 };
-function funcData({ trigger, title = '', insert, snippet }) {
+function buildFunc({ trigger, title = '', insert, snippet }) {
     const res = {
         label: trigger,
         kind: node_1.CompletionItemKind.Function,
@@ -33,6 +33,10 @@ function funcData({ trigger, title = '', insert, snippet }) {
     return res;
 }
 exports.completionData = [
+    buildFunc({
+        trigger: '00',
+        title: '(special) 0x00 Null'
+    }),
     {
         label: '40',
         kind: node_1.CompletionItemKind.Function,

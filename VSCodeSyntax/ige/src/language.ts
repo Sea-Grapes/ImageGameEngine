@@ -13,14 +13,14 @@ const signatureHelpCommand = {
   command: 'editor.action.triggerParameterHints'
 }
 
-interface funcDataParams {
+interface bundFuncParams {
   trigger: string
   title?: string
   insert?: string
   snippet?: string
 }
 
-function funcData({ trigger, title = '', insert, snippet }: funcDataParams): CompletionItem {
+function buildFunc({ trigger, title = '', insert, snippet }: bundFuncParams): CompletionItem {
   const res: CompletionItem = {
     label: trigger,
     kind: CompletionItemKind.Function,
@@ -46,7 +46,10 @@ function funcData({ trigger, title = '', insert, snippet }: funcDataParams): Com
 
 
 export const completionData: CompletionItem[] = [
-
+  buildFunc({
+    trigger: '00',
+    title: '(special) 0x00 Null'
+  }),
   {
     label: '40',
     kind: CompletionItemKind.Function,
