@@ -34,26 +34,38 @@ function buildFunc({ trigger, title = '', insert, snippet }) {
     return res;
 }
 exports.completionData = [
-    buildFunc({
-        trigger: '00',
-        title: '(special) 0x00 Null'
-    }),
-    buildFunc({
-        trigger: '50',
-        title: '(method) 0x50 Offset function'
-    }),
-    buildFunc({
-        trigger: '40',
-        title: '(method) 0x40 Goto function',
-        snippet: "40 ${1:00} ${0:00}",
-    }),
     {
         label: 'setup',
         kind: node_1.CompletionItemKind.Property,
         detail: '(snippet) default setup snippet',
         insertTextFormat: node_1.InsertTextFormat.Snippet,
         insertText: snippets['setup']
-    }
+    },
+    buildFunc({
+        trigger: '00',
+        title: '(special) 0x00 Null',
+        insert: '00 '
+    }),
+    buildFunc({
+        trigger: '50',
+        title: '(method) 0x50 Offset function',
+        insert: '50 '
+    }),
+    buildFunc({
+        trigger: '40',
+        title: '(method) 0x40 Goto function',
+        // snippet: "40 ${1:00} ${0:00}",
+        insert: '40 '
+    }),
+    buildFunc({
+        trigger: 'A0',
+        title: '(method) 0xA0 Value function',
+        insert: 'A0 '
+    }),
+    buildFunc({
+        trigger: 'A1',
+        title: '(method) 0xA1 Variable function'
+    })
 ];
 exports.signatureData = {
     '40': {
