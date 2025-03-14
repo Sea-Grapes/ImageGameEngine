@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseRegions = parseRegions;
 exports.parseDocs = parseDocs;
+exports.parseMarkdown = parseMarkdown;
 const utils_1 = require("./utils");
 const newlineRegex = /\r?\n/;
 const wordRegex = /\w+/;
@@ -50,6 +51,25 @@ function parseDocs(input) {
         }
         else if (activeKey) {
             sections[activeKey].content.push(line);
+        }
+    }
+    return sections;
+}
+function parseMarkdown(input) {
+    const lines = input.split(newlineRegex);
+    const sections = {};
+    let activeKey;
+    for (let line of lines) {
+        if (line.startsWith('# ')) {
+            if (sections[activeKey]) {
+                sections[activeKey] = sections[activeKey].join('\n');
+            }
+            line = line.slice(2);
+            activeKey = wordRegex.exec(line)?.[0];
+            sections[activeKey] = [];
+        }
+        else if (activeKey) {
+            sections[activeKey].push(line);
         }
     }
     return sections;
