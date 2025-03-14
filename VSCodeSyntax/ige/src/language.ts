@@ -28,7 +28,8 @@ function buildFunc({ trigger, title = '', insert, snippet }: bundFuncParams): Co
     documentation: {
       kind: MarkupKind.Markdown,
       value: docs[trigger]
-    }
+    },
+    command: signatureHelpCommand
   }
 
   if(insert) {
@@ -50,48 +51,15 @@ export const completionData: CompletionItem[] = [
     trigger: '00',
     title: '(special) 0x00 Null'
   }),
-  {
-    label: '40',
-    kind: CompletionItemKind.Function,
-    detail: '(method) 0x40 Goto function',
-    documentation: {
-      kind: MarkupKind.Markdown,
-      value: docs['40']
-    },
-    insertTextFormat: InsertTextFormat.Snippet,
-    insertText: "40 ${1:00} ${0:00}",
-    command: signatureHelpCommand
-  },
-  {
-    label: 'B0',
-    kind: CompletionItemKind.Function,
-    detail: '(method) 0xB0 Write',
-    documentation: {
-      kind: MarkupKind.Markdown,
-      value: 'Writes a singular pixel value to a specific address.'
-    },
-    insertTextFormat: InsertTextFormat.Snippet,
-    insertText: 'B0 ${1:00} ${0:00}',
-    command: signatureHelpCommand
-  },
-  {
-    label: 'A0',
-    kind: CompletionItemKind.Function,
-    detail: 'Value mode',
-    documentation: {
-      kind: MarkupKind.Markdown,
-      value: 'Todo'
-    },
-  },
-  {
-    label: 'A1',
-    kind: CompletionItemKind.Function,
-    detail: 'Variable mode',
-    documentation: {
-      kind: MarkupKind.Markdown,
-      value: 'Todo'
-    }
-  },
+  buildFunc({
+    trigger: '50',
+    title: '(method) 0x50 Offset function'
+  }),
+  buildFunc({
+    trigger: '40',
+    title: '(method) 0x40 Goto function',
+    snippet: "40 ${1:00} ${0:00}",
+  }),
   {
     label: 'setup',
     kind: CompletionItemKind.Property,

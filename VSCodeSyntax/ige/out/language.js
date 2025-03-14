@@ -20,7 +20,8 @@ function buildFunc({ trigger, title = '', insert, snippet }) {
         documentation: {
             kind: node_1.MarkupKind.Markdown,
             value: docs[trigger]
-        }
+        },
+        command: signatureHelpCommand
     };
     if (insert) {
         res.insertTextFormat = node_1.InsertTextFormat.PlainText;
@@ -37,48 +38,15 @@ exports.completionData = [
         trigger: '00',
         title: '(special) 0x00 Null'
     }),
-    {
-        label: '40',
-        kind: node_1.CompletionItemKind.Function,
-        detail: '(method) 0x40 Goto function',
-        documentation: {
-            kind: node_1.MarkupKind.Markdown,
-            value: docs['40']
-        },
-        insertTextFormat: node_1.InsertTextFormat.Snippet,
-        insertText: "40 ${1:00} ${0:00}",
-        command: signatureHelpCommand
-    },
-    {
-        label: 'B0',
-        kind: node_1.CompletionItemKind.Function,
-        detail: '(method) 0xB0 Write',
-        documentation: {
-            kind: node_1.MarkupKind.Markdown,
-            value: 'Writes a singular pixel value to a specific address.'
-        },
-        insertTextFormat: node_1.InsertTextFormat.Snippet,
-        insertText: 'B0 ${1:00} ${0:00}',
-        command: signatureHelpCommand
-    },
-    {
-        label: 'A0',
-        kind: node_1.CompletionItemKind.Function,
-        detail: 'Value mode',
-        documentation: {
-            kind: node_1.MarkupKind.Markdown,
-            value: 'Todo'
-        },
-    },
-    {
-        label: 'A1',
-        kind: node_1.CompletionItemKind.Function,
-        detail: 'Variable mode',
-        documentation: {
-            kind: node_1.MarkupKind.Markdown,
-            value: 'Todo'
-        }
-    },
+    buildFunc({
+        trigger: '50',
+        title: '(method) 0x50 Offset function'
+    }),
+    buildFunc({
+        trigger: '40',
+        title: '(method) 0x40 Goto function',
+        snippet: "40 ${1:00} ${0:00}",
+    }),
     {
         label: 'setup',
         kind: node_1.CompletionItemKind.Property,
