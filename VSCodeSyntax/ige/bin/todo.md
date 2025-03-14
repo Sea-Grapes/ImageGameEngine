@@ -29,3 +29,9 @@ test.split(/(#region|#endregion)[ \t]*(\w*)/g)
 For any parameters - they are only going to be in the format FF or $123. Therefore we should parse by matching for this, then any other symbols are removed. This is for like FILL|X1 Y1|X2 Y2|RR GG BB
 
 Consider making funcData -> [CompletionItem, SignatureHelp] to get both datas
+
+
+# managing data
+
+I think I want functions to auto generate from markdown.
+Additional configuration (ex. snippets) can be added somewhere

@@ -38,8 +38,32 @@ export function parseRegions(input: string): Record<string, string> {
 
 }
 
-
 export function parseDocs(input) {
+  const lines = input.split(newlineRegex)
+  const sections = {}
+  let activeKey
+
+  for (let line of lines) {
+    if (line.startsWith('# ')) {
+      if (sections[activeKey]) {
+        sections[activeKey] = sections[activeKey].join('\n')
+      }
+      line = line.slice(2)
+      activeKey = wordRegex.exec(line)?.[0]
+
+      sections[activeKey] = []
+    }
+
+    else if (activeKey) {
+      sections[activeKey].push(line)
+    }
+  }
+
+  return sections
+}
+
+
+export function parseCustom(input) {
   const lines = input.split(newlineRegex)
   const sections = {}
   let activeKey
@@ -63,31 +87,6 @@ export function parseDocs(input) {
 
     else if (activeKey) {
       sections[activeKey].content.push(line)
-    }
-  }
-
-  return sections
-}
-
-
-export function parseMarkdown(input) {
-  const lines = input.split(newlineRegex)
-  const sections = {}
-  let activeKey
-
-  for (let line of lines) {
-    if (line.startsWith('# ')) {
-      if (sections[activeKey]) {
-        sections[activeKey] = sections[activeKey].join('\n')
-      }
-      line = line.slice(2)
-      activeKey = wordRegex.exec(line)?.[0]
-
-      sections[activeKey] = []
-    }
-
-    else if (activeKey) {
-      sections[activeKey].push(line)
     }
   }
 

@@ -13,13 +13,13 @@ const signatureHelpCommand = {
   command: 'editor.action.triggerParameterHints'
 }
 
+
 interface bundFuncParams {
   trigger: string
   title?: string
   insert?: string
   snippet?: string
 }
-
 
 
 function buildFunc({ trigger, title = '', insert, snippet }: bundFuncParams): CompletionItem {
@@ -29,7 +29,7 @@ function buildFunc({ trigger, title = '', insert, snippet }: bundFuncParams): Co
     detail: title,
     documentation: {
       kind: MarkupKind.Markdown,
-      value: docs[trigger].content
+      value: docs[trigger]
     },
     command: signatureHelpCommand
   }

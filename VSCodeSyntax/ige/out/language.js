@@ -19,7 +19,7 @@ function buildFunc({ trigger, title = '', insert, snippet }) {
         detail: title,
         documentation: {
             kind: node_1.MarkupKind.Markdown,
-            value: docs[trigger].content
+            value: docs[trigger]
         },
         command: signatureHelpCommand
     };
