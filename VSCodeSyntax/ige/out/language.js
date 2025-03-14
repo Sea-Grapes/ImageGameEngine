@@ -12,6 +12,26 @@ const signatureHelpCommand = {
     title: 'triggerParameterHints',
     command: 'editor.action.triggerParameterHints'
 };
+function funcData({ trigger, title = '', insert, snippet }) {
+    const res = {
+        label: trigger,
+        kind: node_1.CompletionItemKind.Function,
+        detail: title,
+        documentation: {
+            kind: node_1.MarkupKind.Markdown,
+            value: docs[trigger]
+        }
+    };
+    if (insert) {
+        res.insertTextFormat = node_1.InsertTextFormat.PlainText;
+        res.insertText = insert;
+    }
+    if (snippet) {
+        res.insertTextFormat = node_1.InsertTextFormat.Snippet;
+        res.insertText = snippet;
+    }
+    return res;
+}
 exports.completionData = [
     {
         label: '40',

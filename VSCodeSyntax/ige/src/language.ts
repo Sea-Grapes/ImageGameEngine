@@ -13,8 +13,40 @@ const signatureHelpCommand = {
   command: 'editor.action.triggerParameterHints'
 }
 
+interface funcDataParams {
+  trigger: string
+  title?: string
+  insert?: string
+  snippet?: string
+}
+
+function funcData({ trigger, title = '', insert, snippet }: funcDataParams): CompletionItem {
+  const res: CompletionItem = {
+    label: trigger,
+    kind: CompletionItemKind.Function,
+    detail: title,
+    documentation: {
+      kind: MarkupKind.Markdown,
+      value: docs[trigger]
+    }
+  }
+
+  if(insert) {
+    res.insertTextFormat = InsertTextFormat.PlainText
+    res.insertText = insert
+  }
+
+  if(snippet) {
+    res.insertTextFormat = InsertTextFormat.Snippet
+    res.insertText = snippet
+  }
+
+  return res
+}
+
 
 export const completionData: CompletionItem[] = [
+
   {
     label: '40',
     kind: CompletionItemKind.Function,
