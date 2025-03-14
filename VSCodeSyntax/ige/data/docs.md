@@ -9,9 +9,7 @@ Goes to the specified address.
 - `G_1`, `B_1`: The address to jump to.
 
 #region A0: Value mode
-
 This pixel will be treated as a value, and won't be executed as any code. This comes in handy for certain instructions.
-
 If this pixel is `0xA0`, the pixel will be treated as a VALUE, and will be read like this:
 - `G_1`: The length, in bytes, of the value.
 Every pixel after that will be read as a value. So if `G_1=0x04` (hex value of 4), then the value read will be the concatenation of `R_2,G_2,B_2,R_3`. This means `B_1` is ignored.
@@ -31,9 +29,40 @@ Writes a singular pixel value to a specific address.
 - `G_1`, `B_1`: The X and Y pixel to write to.
 - The second pixel will be the pixel value to write.
 
+
 #region C0: Copy Area
 Copies an area to another area.
 - `G_1`, `B_1`: The top left corner of the data to copy.
 - `G_2`, `B_2`: The bottom right corner of the data to copy.
 - `G_3`, `B_3`: The top left target corner.
 - `R_4`, `G_4`, `B_4`: The mask color. any pixel with this exact color will not be copied over to the target.
+
+
+#region CA: Copy Value
+Copies a singular pixel to another.
+- `G_1`, `B_1`: The source pixel.
+- `G_2`, `B_2`: The target pixel.
+
+
+#region D0: Fill area
+Fills a square/rectangular area with a singular color. This wraps; it starts at the "top left", and works its way down and to the right, wrapping around the screen (if needed) until it reaches the "bottom right". 
+- `G_1`, `B_1`: The top left corner of the square.
+- `G_2`, `B_2`: The bottom right corner of the square.
+- `R_3`, `G_3`, `B_3`: The value to fill with.
+
+
+#region BB: Blit
+Renders the screen.
+- `B_1`: The FPS for this blit.
+If this is 0, then it'll render without pause. Any other number will wait `1/val` seconds AFTER rendering the image.
+
+Keep in mind that the `speed` argument in the main.py will override this. The `forcefull` argument will also disable this.
+
+
+#region EF: Branch to
+Jumps instruction to the given address, and appends the address of this instruction to the [branch stack](#branch-stack). Or rather, it searches for the right-most null value, and replaces it with the current address. If the stack is full, the last value in the stack will be overwritten.
+- `G_1`, `B_1`: The address to branch to.
+
+
+#region EE: Return
+Returns to the last executed "branch to" instruction. Or rather, it searches for the right-most non-0 pixel in the [branch stack](#branch-stack), and jumps to that address. Also sets the last element in the stack to 0. If the stack is empty, returns to (0, 0).
