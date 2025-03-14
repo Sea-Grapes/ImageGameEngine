@@ -1,6 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseRegions = parseRegions;
+exports.parseDocs = parseDocs;
+const utils_1 = require("./utils");
+const newlineRegex = /\r?\n/;
+const wordRegex = /\w+/;
+const wsRegex = /\s+/;
 function parseRegions(input) {
     const lines = input.split(/\r?\n/);
     const regions = {};
@@ -26,5 +31,25 @@ function parseRegions(input) {
         regions[activeRegion.name] = activeRegion.lines.join('\n').trim();
     }
     return regions;
+}
+function parseDocs(input) {
+    const lines = input.split(newlineRegex);
+    const sections = {};
+    let activeKey;
+    for (let line of lines) {
+        if (line.startsWith('# ')) {
+            line = line.slice(2);
+            activeKey = wordRegex.exec(line)[0];
+            const title = (0, utils_1.cutString)(line, ' ')[1];
+            sections[activeKey] = {
+                title,
+                content: ''
+            };
+        }
+        else if (activeKey) {
+            sections[activeKey].content += line;
+        }
+    }
+    return sections;
 }
 //# sourceMappingURL=parser.js.map
