@@ -5,7 +5,6 @@ exports.parseDocs = parseDocs;
 const utils_1 = require("./utils");
 const newlineRegex = /\r?\n/;
 const wordRegex = /\w+/;
-const wsRegex = /\s+/;
 function parseRegions(input) {
     const lines = input.split(/\r?\n/);
     const regions = {};

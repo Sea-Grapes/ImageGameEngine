@@ -2,7 +2,6 @@ import { cutString } from "./utils";
 
 const newlineRegex = /\r?\n/
 const wordRegex = /\w+/
-const wsRegex = /\s+/
 
 export function parseRegions(input: string): Record<string, string> {
 
