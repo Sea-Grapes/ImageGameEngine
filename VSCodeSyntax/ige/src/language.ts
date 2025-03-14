@@ -5,7 +5,7 @@ import { read } from './utils'
 const docs = parseDocs(read('data/docs.md'))
 const snippets = parseRegions(read('data/snippets.ige'))
 
-// console.log(docs)
+console.log(docs)
 
 // if the function has parameters, upon completion resolve
 const signatureHelpCommand = {

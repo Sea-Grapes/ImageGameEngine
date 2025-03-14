@@ -9,7 +9,7 @@ Goes to the specified address.
 - `G_1`, `B_1`: The address to jump to.
 
 ```ige
-# Goes to (0, 0)
+#Goes to (0, 0)
 40 00 00
 ```
 
