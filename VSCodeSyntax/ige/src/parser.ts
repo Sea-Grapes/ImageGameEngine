@@ -44,19 +44,25 @@ export function parseDocs(input) {
   const sections = {}
   let activeKey
 
-  for(let line of lines) {
-    if(line.startsWith('# ')) {
-      if(sections[activeKey]) {
-        sections[activeKey] = sections[activeKey].join('\n')
-      }
-      line = line.slice(2)
-      activeKey = wordRegex.exec(line)?.[0]
+  for (let line of lines) {
+    if (line.startsWith('# ')) {
 
-      sections[activeKey] = []
+      if(sections[activeKey]) {
+        sections[activeKey].content = sections[activeKey].content.join('\n')
+      }
+
+      line = line.slice(2)
+      activeKey = wordRegex.exec(line)[0]
+      const title = cutString(line, ' ')[1]
+
+      sections[activeKey] = {
+        title,
+        content: []
+      }
     }
 
-    else if(activeKey) {
-      sections[activeKey].push(line)
+    else if (activeKey) {
+      sections[activeKey].content.push(line)
     }
   }
 

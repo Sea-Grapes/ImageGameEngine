@@ -20,6 +20,8 @@ interface bundFuncParams {
   snippet?: string
 }
 
+
+
 function buildFunc({ trigger, title = '', insert, snippet }: bundFuncParams): CompletionItem {
   const res: CompletionItem = {
     label: trigger,
@@ -27,7 +29,7 @@ function buildFunc({ trigger, title = '', insert, snippet }: bundFuncParams): Co
     detail: title,
     documentation: {
       kind: MarkupKind.Markdown,
-      value: docs[trigger]
+      value: docs[trigger].content
     },
     command: signatureHelpCommand
   }
