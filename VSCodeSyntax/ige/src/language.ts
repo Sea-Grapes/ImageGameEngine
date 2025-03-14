@@ -1,9 +1,11 @@
 import { CompletionItem, CompletionItemKind, InsertTextFormat, MarkupKind, SignatureInformation } from 'vscode-languageserver/node'
-import { parseRegions } from "./parser"
+import { parseDocs, parseRegions } from "./parser"
 import { read } from './utils'
 
 const docs = parseRegions(read('data/docs.md'))
 const snippets = parseRegions(read('data/snippets.ige'))
+
+console.log()
 
 // if the function has parameters, upon completion resolve
 const signatureHelpCommand = {
