@@ -2,10 +2,8 @@ import { CompletionItem, CompletionItemKind, InsertTextFormat, MarkupKind, Signa
 import { parseDocs, parseRegions } from "./parser"
 import { read } from './utils'
 
-const docs = parseRegions(read('data/docs.md'))
+const docs = parseDocs(read('data/docs.md'))
 const snippets = parseRegions(read('data/snippets.ige'))
-
-console.log()
 
 // if the function has parameters, upon completion resolve
 const signatureHelpCommand = {

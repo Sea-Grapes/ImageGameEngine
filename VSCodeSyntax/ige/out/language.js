@@ -4,9 +4,8 @@ exports.signatureData = exports.completionData = void 0;
 const node_1 = require("vscode-languageserver/node");
 const parser_1 = require("./parser");
 const utils_1 = require("./utils");
-const docs = (0, parser_1.parseRegions)((0, utils_1.read)('data/docs.md'));
+const docs = (0, parser_1.parseDocs)((0, utils_1.read)('data/docs.md'));
 const snippets = (0, parser_1.parseRegions)((0, utils_1.read)('data/snippets.ige'));
-console.log();
 // if the function has parameters, upon completion resolve
 const signatureHelpCommand = {
     title: 'triggerParameterHints',

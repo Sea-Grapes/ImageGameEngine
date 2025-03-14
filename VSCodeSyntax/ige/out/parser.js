@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseRegions = parseRegions;
 exports.parseDocs = parseDocs;
-const utils_1 = require("./utils");
 const newlineRegex = /\r?\n/;
 const wordRegex = /\w+/;
 function parseRegions(input) {
@@ -39,14 +38,10 @@ function parseDocs(input) {
         if (line.startsWith('# ')) {
             line = line.slice(2);
             activeKey = wordRegex.exec(line)[0];
-            const title = (0, utils_1.cutString)(line, ' ')[1];
-            sections[activeKey] = {
-                title,
-                content: ''
-            };
+            sections[activeKey] = '';
         }
         else if (activeKey) {
-            sections[activeKey].content += line;
+            sections[activeKey] += line;
         }
     }
     return sections;
