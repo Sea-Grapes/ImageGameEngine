@@ -36,12 +36,15 @@ function parseDocs(input) {
     let activeKey;
     for (let line of lines) {
         if (line.startsWith('# ')) {
+            if (sections[activeKey]) {
+                sections[activeKey] = sections[activeKey].join('\n');
+            }
             line = line.slice(2);
-            activeKey = wordRegex.exec(line)[0];
-            sections[activeKey] = '';
+            activeKey = wordRegex.exec(line)?.[0];
+            sections[activeKey] = [];
         }
         else if (activeKey) {
-            sections[activeKey] += line;
+            sections[activeKey].push(line);
         }
     }
     return sections;

@@ -7,3 +7,5 @@ Ignores the next `G_1` pixels. Jumping 0 pixels makes the pointer land on where 
 # `40`: Goto
 Goes to the specified address.
 - `G_1`, `B_1`: The address to jump to.
+
+# `A0`: Value mode

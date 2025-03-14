@@ -51,8 +51,7 @@ ws.onSignatureHelp((params) => {
     // this is purely for methods parameters
     const { context } = params;
     const { activeSignatureHelp } = context;
-    console.log('EVT: signature');
-    // console.log(activeSignatureHelp)
+    // console.log('EVT: signature')
     const doc = documents.get(params.textDocument.uri);
     const position = params.position;
     let lineText = doc.getText({

@@ -66,10 +66,7 @@ ws.onSignatureHelp((params: SignatureHelpParams): SignatureHelp => {
   const { context } = params
   const { activeSignatureHelp } = context
 
-  console.log('EVT: signature')
-  // console.log(activeSignatureHelp)
-
-
+  // console.log('EVT: signature')
 
   const doc = documents.get(params.textDocument.uri)
   const position = params.position
