@@ -17,6 +17,12 @@ const completionData = [
         detail: '(snippet) default setup snippet',
         insertTextFormat: node_1.InsertTextFormat.Snippet,
         insertText: snippets['setup']
+    },
+    {
+        label: 'FILL|',
+        kind: node_1.CompletionItemKind.Function,
+        detail: '(util) FILL',
+        command: signatureHelpCommand
     }
 ];
 exports.completionData = completionData;

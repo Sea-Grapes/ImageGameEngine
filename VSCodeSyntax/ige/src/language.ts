@@ -19,6 +19,12 @@ const completionData: CompletionItem[] = [
     detail: '(snippet) default setup snippet',
     insertTextFormat: InsertTextFormat.Snippet,
     insertText: snippets['setup']
+  },
+  {
+    label: 'FILL|',
+    kind: CompletionItemKind.Function,
+    detail: '(util) FILL',
+    command: signatureHelpCommand
   }
 ]
 
