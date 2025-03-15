@@ -78,7 +78,7 @@ ws.onSignatureHelp((params: SignatureHelpParams): SignatureHelp => {
 
   // let firstToken = lineText.match(/\S+/)[0]
 
-  let tokens = Array.from(lineText.matchAll(/\W*\w+/g)).map(token => {
+  let tokens = Array.from(lineText.matchAll(/\W*\w+|\W+/g)).map(token => {
     return {
       string: token[0],
       start: token.index,
