@@ -78,13 +78,15 @@ ws.onSignatureHelp((params: SignatureHelpParams): SignatureHelp => {
 
   // let firstToken = lineText.match(/\S+/)[0]
 
-  let tokens = Array.from(lineText.matchAll(/ *\S+|\s+/g)).map(token => {
+  let tokens = Array.from(lineText.matchAll(/\W*\w+/g)).map(token => {
     return {
       string: token[0],
       start: token.index,
       end: token.index + token[0].length
     }
   })
+
+  console.log(tokens)
 
   // if we're in first token, quit
   const currentTokenIndex = tokens.findIndex(token => position.character >= token.start && position.character <= token.end)

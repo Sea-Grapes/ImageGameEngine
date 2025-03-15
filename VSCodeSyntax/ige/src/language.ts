@@ -35,8 +35,17 @@ const signatureData: Record<string, SignatureInformation | SignatureInformation[
       { label: 'Y' }
     ]
   },
-  'FILL|': {
-    
+  'FILL': {
+    label: 'FILL|X1 Y1|X2 Y2|RR GG BB',
+    parameters: [
+      { label: 'X1' },
+      { label: 'Y1' },
+      { label: 'X2' },
+      { label: 'Y2' },
+      { label: 'RR' },
+      { label: 'GG' },
+      { label: 'BB' },
+    ]
   }
 }
 
