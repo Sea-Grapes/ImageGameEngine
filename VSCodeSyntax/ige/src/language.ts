@@ -1,10 +1,8 @@
 import { CompletionItem, CompletionItemKind, InsertTextFormat, MarkupKind, SignatureInformation } from 'vscode-languageserver/node'
 import { parseMarkdown, parseRegions } from "./parser"
-import { read } from './utils'
+import { cutString, read } from './utils'
 
-const functions = parseMarkdown(read('data/functions.md'), data => {
-  
-})
+
 const snippets = parseRegions(read('data/snippets.ige'))
 
 // command for triggering signature help
@@ -13,7 +11,7 @@ const signatureHelpCommand = {
   command: 'editor.action.triggerParameterHints'
 }
 
-export const completionData: CompletionItem[] = [
+const completionData: CompletionItem[] = [
   {
     label: 'setup',
     kind: CompletionItemKind.Property,
@@ -22,6 +20,30 @@ export const completionData: CompletionItem[] = [
     insertText: snippets['setup']
   }
 ]
+
+// parsing functions into completionData
+const wordRegex = /\w+/
+parseMarkdown(read('data/functions.md'), ({ heading, content }) => {
+  let trigger = wordRegex.exec(heading)?.[0]
+  if(!trigger) return
+
+  let title = cutString(heading, ' ')[1]
+  
+  const res: CompletionItem = {
+    label: trigger,
+    kind: CompletionItemKind.Function,
+    detail: title,
+    documentation: {
+      kind: MarkupKind.Markdown,
+      value: content
+    },
+    command: signatureHelpCommand,
+    insertTextFormat: InsertTextFormat.PlainText,
+    insertText: trigger + ' '
+  }
+
+  completionData.push(res)
+})
 
 export const signatureData: Record<string, SignatureInformation | SignatureInformation[]> = {
   '40': {
@@ -36,3 +58,5 @@ export const signatureData: Record<string, SignatureInformation | SignatureInfor
     ]
   },
 }
+
+export { completionData }

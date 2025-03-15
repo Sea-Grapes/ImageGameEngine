@@ -1,5 +1,4 @@
 const newlines = /\r?\n/
-const wordRegex = /\w+/
 
 // parse #region and #endregion
 export function parseRegions(input: string): Record<string, string> {

@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseRegions = parseRegions;
 exports.parseMarkdown = parseMarkdown;
 const newlines = /\r?\n/;
-const wordRegex = /\w+/;
 // parse #region and #endregion
 function parseRegions(input) {
     const lines = input.split(/\r?\n/);
