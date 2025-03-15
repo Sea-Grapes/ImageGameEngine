@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseRegions = parseRegions;
-exports.parseDocs = parseDocs;
-const newlineRegex = /\r?\n/;
+exports.parseMarkdown = parseMarkdown;
+const newlines = /\r?\n/;
 const wordRegex = /\w+/;
+// parse #region and #endregion
 function parseRegions(input) {
     const lines = input.split(/\r?\n/);
     const regions = {};
@@ -30,26 +31,35 @@ function parseRegions(input) {
     }
     return regions;
 }
-function parseDocs(input) {
-    const lines = input.split(newlineRegex);
-    const results = {};
+// key = wordRegex.exec(line)?.[0]
+// basic markdown parser for top-level headings
+function parseMarkdown(input) {
+    const lines = input.split(newlines);
+    const results = [];
     let insideCodeBlock = false;
-    let key;
+    let currentData = null;
     for (let line of lines) {
         if (line.startsWith('```')) {
             insideCodeBlock = !insideCodeBlock;
         }
         if (line.startsWith('# ') && !insideCodeBlock) {
-            if (results[key]) {
-                results[key] = results[key].join('\n');
+            // if there is data already, save it
+            if (currentData) {
+                currentData.content = currentData.content.join('\n');
+                results.push(currentData);
             }
-            line = line.slice(2);
-            key = wordRegex.exec(line)?.[0];
-            results[key] = [];
+            currentData = {
+                heading: line.slice(2),
+                content: []
+            };
         }
-        else if (key) {
-            results[key].push(line);
+        else if (currentData) {
+            currentData.content.push(line);
         }
+    }
+    if (currentData) {
+        currentData.content = currentData.content.join('\n');
+        results.push(currentData);
     }
     return results;
 }

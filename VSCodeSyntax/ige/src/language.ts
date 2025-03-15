@@ -1,13 +1,11 @@
 import { CompletionItem, CompletionItemKind, InsertTextFormat, MarkupKind, SignatureInformation } from 'vscode-languageserver/node'
-import { parseDocs, parseRegions } from "./parser"
+import { parseMarkdown, parseRegions } from "./parser"
 import { read } from './utils'
 
-const docs = parseDocs(read('data/docs.md'))
+const functions = parseMarkdown(read('data/functions.md'))
 const snippets = parseRegions(read('data/snippets.ige'))
 
-console.log(docs)
-
-// if the function has parameters, upon completion resolve
+// command for triggering signature help
 const signatureHelpCommand = {
   title: 'triggerParameterHints',
   command: 'editor.action.triggerParameterHints'
@@ -55,32 +53,7 @@ export const completionData: CompletionItem[] = [
     detail: '(snippet) default setup snippet',
     insertTextFormat: InsertTextFormat.Snippet,
     insertText: snippets['setup']
-  },
-  buildFunc({
-    trigger: '00',
-    title: '(special) 0x00 Null',
-    insert: '00 '
-  }),
-  buildFunc({
-    trigger: '50',
-    title: '(method) 0x50 Offset function',
-    insert: '50 '
-  }),
-  buildFunc({
-    trigger: '40',
-    title: '(method) 0x40 Goto function',
-    // snippet: "40 ${1:00} ${0:00}",
-    insert: '40 '
-  }),
-  buildFunc({
-    trigger: 'A0',
-    title: '(method) 0xA0 Value function',
-    insert: 'A0 '
-  }),
-  buildFunc({
-    trigger: 'A1',
-    title: '(method) 0xA1 Variable function'
-  })
+  }
 ]
 
 export const signatureData: Record<string, SignatureInformation | SignatureInformation[]> = {

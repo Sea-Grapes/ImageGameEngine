@@ -1,6 +1,7 @@
-const newlineRegex = /\r?\n/
+const newlines = /\r?\n/
 const wordRegex = /\w+/
 
+// parse #region and #endregion
 export function parseRegions(input: string): Record<string, string> {
 
   const lines = input.split(/\r?\n/)
@@ -36,11 +37,15 @@ export function parseRegions(input: string): Record<string, string> {
 
 }
 
-export function parseDocs(input) {
-  const lines = input.split(newlineRegex)
-  const results = {}
+// key = wordRegex.exec(line)?.[0]
+
+
+// basic markdown parser for top-level headings
+export function parseMarkdown(input) {
+  const lines = input.split(newlines)
+  const results = []
   let insideCodeBlock = false
-  let key
+  let currentData = null
 
   for (let line of lines) {
 
@@ -49,18 +54,27 @@ export function parseDocs(input) {
     }
 
     if (line.startsWith('# ') && !insideCodeBlock) {
-      if (results[key]) {
-        results[key] = results[key].join('\n')
+      // if there is data already, save it
+      if(currentData) {
+        currentData.content = currentData.content.join('\n')
+        results.push(currentData)
       }
-      line = line.slice(2)
-      key = wordRegex.exec(line)?.[0]
+      
+      currentData = {
+        heading: line.slice(2),
+        content: []
+      }
 
-      results[key] = []
     }
 
-    else if (key) {
-      results[key].push(line)
+    else if (currentData) {
+      currentData.content.push(line)
     }
+  }
+  
+  if(currentData) {
+    currentData.content = currentData.content.join('\n')
+    results.push(currentData)
   }
 
   return results
