@@ -41,9 +41,13 @@ export function parseRegions(input: string): Record<string, string> {
 
 
 // basic markdown parser for top-level headings
-function parseMarkdown(input: string) {
+
+export function parseMarkdown(
+  input: string,
+  mapCallback?: (data) => any
+) {
   const lines = input.split(newlines)
-  const results = []
+  let results = []
   let insideCodeBlock = false
 
   for (const line of lines) {
@@ -64,6 +68,8 @@ function parseMarkdown(input: string) {
       current.content += (current.content.length? '\n': '') + line
     }
   }
+
+  if(mapCallback) results = results.map(mapCallback)
 
   return results
 }

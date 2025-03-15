@@ -11,41 +11,6 @@ const signatureHelpCommand = {
   command: 'editor.action.triggerParameterHints'
 }
 
-
-interface bundFuncParams {
-  trigger: string
-  title?: string
-  insert?: string
-  snippet?: string
-}
-
-
-function buildFunc({ trigger, title = '', insert, snippet }: bundFuncParams): CompletionItem {
-  const res: CompletionItem = {
-    label: trigger,
-    kind: CompletionItemKind.Function,
-    detail: title,
-    documentation: {
-      kind: MarkupKind.Markdown,
-      value: docs[trigger]
-    },
-    command: signatureHelpCommand
-  }
-
-  if(insert) {
-    res.insertTextFormat = InsertTextFormat.PlainText
-    res.insertText = insert
-  }
-
-  if(snippet) {
-    res.insertTextFormat = InsertTextFormat.Snippet
-    res.insertText = snippet
-  }
-
-  return res
-}
-
-
 export const completionData: CompletionItem[] = [
   {
     label: 'setup',
@@ -61,7 +26,7 @@ export const signatureData: Record<string, SignatureInformation | SignatureInfor
     label: '40 X Y',
     documentation: {
       kind: MarkupKind.Markdown,
-      value: docs['40']
+      value: ''
     },
     parameters: [
       { label: 'X' },

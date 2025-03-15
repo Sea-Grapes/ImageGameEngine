@@ -11,27 +11,6 @@ const signatureHelpCommand = {
     title: 'triggerParameterHints',
     command: 'editor.action.triggerParameterHints'
 };
-function buildFunc({ trigger, title = '', insert, snippet }) {
-    const res = {
-        label: trigger,
-        kind: node_1.CompletionItemKind.Function,
-        detail: title,
-        documentation: {
-            kind: node_1.MarkupKind.Markdown,
-            value: docs[trigger]
-        },
-        command: signatureHelpCommand
-    };
-    if (insert) {
-        res.insertTextFormat = node_1.InsertTextFormat.PlainText;
-        res.insertText = insert;
-    }
-    if (snippet) {
-        res.insertTextFormat = node_1.InsertTextFormat.Snippet;
-        res.insertText = snippet;
-    }
-    return res;
-}
 exports.completionData = [
     {
         label: 'setup',
@@ -46,7 +25,7 @@ exports.signatureData = {
         label: '40 X Y',
         documentation: {
             kind: node_1.MarkupKind.Markdown,
-            value: docs['40']
+            value: ''
         },
         parameters: [
             { label: 'X' },

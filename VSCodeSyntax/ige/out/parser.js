@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseRegions = parseRegions;
+exports.parseMarkdown = parseMarkdown;
 const newlines = /\r?\n/;
 const wordRegex = /\w+/;
 // parse #region and #endregion
@@ -32,9 +33,9 @@ function parseRegions(input) {
 }
 // key = wordRegex.exec(line)?.[0]
 // basic markdown parser for top-level headings
-function parseMarkdown(input) {
+function parseMarkdown(input, mapCallback) {
     const lines = input.split(newlines);
-    const results = [];
+    let results = [];
     let insideCodeBlock = false;
     for (const line of lines) {
         if (line.startsWith('```')) {
@@ -52,6 +53,8 @@ function parseMarkdown(input) {
             current.content += (current.content.length ? '\n' : '') + line;
         }
     }
+    if (mapCallback)
+        results = results.map(mapCallback);
     return results;
 }
 //# sourceMappingURL=parser.js.map
