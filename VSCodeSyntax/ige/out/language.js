@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.completionData = exports.signatureData = void 0;
+exports.signatureData = exports.completionData = void 0;
 const node_1 = require("vscode-languageserver/node");
 const parser_1 = require("./parser");
 const utils_1 = require("./utils");
@@ -20,6 +20,21 @@ const completionData = [
     }
 ];
 exports.completionData = completionData;
+const signatureData = {
+    '40': {
+        label: '40 X Y',
+        documentation: {
+            kind: node_1.MarkupKind.Markdown,
+            value: ''
+        },
+        parameters: [
+            { label: 'X' },
+            { label: 'Y' }
+        ]
+    },
+    'FILL|': {}
+};
+exports.signatureData = signatureData;
 // parsing functions into completionData
 const wordRegex = /\w+/;
 (0, parser_1.parseMarkdown)((0, utils_1.read)('data/functions.md'), ({ heading, content }) => {
@@ -41,17 +56,4 @@ const wordRegex = /\w+/;
     };
     completionData.push(res);
 });
-exports.signatureData = {
-    '40': {
-        label: '40 X Y',
-        documentation: {
-            kind: node_1.MarkupKind.Markdown,
-            value: ''
-        },
-        parameters: [
-            { label: 'X' },
-            { label: 'Y' }
-        ]
-    },
-};
 //# sourceMappingURL=language.js.map

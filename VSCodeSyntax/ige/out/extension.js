@@ -22,18 +22,9 @@ function activate(context) {
     client.onDidChangeState(event => {
         if (event.newState === node_1.State.Running) {
             console.log('[IGE CLIENT] active');
-            vscode_1.window.showInformationMessage(`ige enabled`);
+            // window.showInformationMessage(`ige enabled`)
         }
     });
-    // selectionChangeListener = window.onDidChangeTextEditorSelection(event => {
-    //   console.log('change')
-    //   commands.executeCommand('editor.action.triggerParameterHints')
-    //   // commands.executeCommand(
-    //   //   'vscode.executeSignatureHelpProvider',
-    //   //   event.textEditor.document.uri,
-    //   //   event.textEditor.selection.active
-    //   // )
-    // })
 }
 function deactivate() {
     if (client)

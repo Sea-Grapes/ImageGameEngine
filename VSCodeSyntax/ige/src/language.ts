@@ -11,6 +11,7 @@ const signatureHelpCommand = {
   command: 'editor.action.triggerParameterHints'
 }
 
+
 const completionData: CompletionItem[] = [
   {
     label: 'setup',
@@ -20,6 +21,24 @@ const completionData: CompletionItem[] = [
     insertText: snippets['setup']
   }
 ]
+
+
+const signatureData: Record<string, SignatureInformation | SignatureInformation[]> = {
+  '40': {
+    label: '40 X Y',
+    documentation: {
+      kind: MarkupKind.Markdown,
+      value: ''
+    },
+    parameters: [
+      { label: 'X' },
+      { label: 'Y' }
+    ]
+  },
+  'FILL|': {
+    
+  }
+}
 
 // parsing functions into completionData
 const wordRegex = /\w+/
@@ -45,18 +64,5 @@ parseMarkdown(read('data/functions.md'), ({ heading, content }) => {
   completionData.push(res)
 })
 
-export const signatureData: Record<string, SignatureInformation | SignatureInformation[]> = {
-  '40': {
-    label: '40 X Y',
-    documentation: {
-      kind: MarkupKind.Markdown,
-      value: ''
-    },
-    parameters: [
-      { label: 'X' },
-      { label: 'Y' }
-    ]
-  },
-}
 
-export { completionData }
+export { completionData, signatureData }
