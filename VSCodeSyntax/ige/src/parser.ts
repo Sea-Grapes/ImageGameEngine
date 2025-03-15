@@ -40,26 +40,32 @@ export function parseRegions(input: string): Record<string, string> {
 
 export function parseDocs(input) {
   const lines = input.split(newlineRegex)
-  const sections = {}
-  let activeKey
+  const reselts = {}
+  let insideCodeBlock = false
+  let key
 
   for (let line of lines) {
-    if (line.startsWith('# ')) {
-      if (sections[activeKey]) {
-        sections[activeKey] = sections[activeKey].join('\n')
-      }
-      line = line.slice(2)
-      activeKey = wordRegex.exec(line)?.[0]
 
-      sections[activeKey] = []
+    if(line.startsWith('```')) {
+      insideCodeBlock = !insideCodeBlock
     }
 
-    else if (activeKey) {
-      sections[activeKey].push(line)
+    if (line.startsWith('# ') && !insideCodeBlock) {
+      if (reselts[key]) {
+        reselts[key] = reselts[key].join('\n')
+      }
+      line = line.slice(2)
+      key = wordRegex.exec(line)?.[0]
+
+      reselts[key] = []
+    }
+
+    else if (key) {
+      reselts[key].push(line)
     }
   }
 
-  return sections
+  return reselts
 }
 
 

@@ -34,22 +34,26 @@ function parseRegions(input) {
 }
 function parseDocs(input) {
     const lines = input.split(newlineRegex);
-    const sections = {};
-    let activeKey;
+    const reselts = {};
+    let insideCodeBlock = false;
+    let key;
     for (let line of lines) {
-        if (line.startsWith('# ')) {
-            if (sections[activeKey]) {
-                sections[activeKey] = sections[activeKey].join('\n');
+        if (line.startsWith('```')) {
+            insideCodeBlock = !insideCodeBlock;
+        }
+        if (line.startsWith('# ') && !insideCodeBlock) {
+            if (reselts[key]) {
+                reselts[key] = reselts[key].join('\n');
             }
             line = line.slice(2);
-            activeKey = wordRegex.exec(line)?.[0];
-            sections[activeKey] = [];
+            key = wordRegex.exec(line)?.[0];
+            reselts[key] = [];
         }
-        else if (activeKey) {
-            sections[activeKey].push(line);
+        else if (key) {
+            reselts[key].push(line);
         }
     }
-    return sections;
+    return reselts;
 }
 function parseCustom(input) {
     const lines = input.split(newlineRegex);
