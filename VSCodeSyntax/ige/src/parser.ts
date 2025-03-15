@@ -1,5 +1,3 @@
-import { cutString } from "./utils";
-
 const newlineRegex = /\r?\n/
 const wordRegex = /\w+/
 
@@ -40,7 +38,7 @@ export function parseRegions(input: string): Record<string, string> {
 
 export function parseDocs(input) {
   const lines = input.split(newlineRegex)
-  const reselts = {}
+  const results = {}
   let insideCodeBlock = false
   let key
 
@@ -51,50 +49,19 @@ export function parseDocs(input) {
     }
 
     if (line.startsWith('# ') && !insideCodeBlock) {
-      if (reselts[key]) {
-        reselts[key] = reselts[key].join('\n')
+      if (results[key]) {
+        results[key] = results[key].join('\n')
       }
       line = line.slice(2)
       key = wordRegex.exec(line)?.[0]
 
-      reselts[key] = []
+      results[key] = []
     }
 
     else if (key) {
-      reselts[key].push(line)
+      results[key].push(line)
     }
   }
 
-  return reselts
-}
-
-
-export function parseCustom(input) {
-  const lines = input.split(newlineRegex)
-  const sections = {}
-  let activeKey
-
-  for (let line of lines) {
-    if (line.startsWith('# ')) {
-
-      if(sections[activeKey]) {
-        sections[activeKey].content = sections[activeKey].content.join('\n')
-      }
-
-      line = line.slice(2)
-      activeKey = wordRegex.exec(line)[0]
-      const title = cutString(line, ' ')[1]
-
-      sections[activeKey] = {
-        title,
-        content: []
-      }
-    }
-
-    else if (activeKey) {
-      sections[activeKey].content.push(line)
-    }
-  }
-
-  return sections
+  return results
 }
