@@ -31,8 +31,6 @@ function parseRegions(input) {
     }
     return regions;
 }
-// key = wordRegex.exec(line)?.[0]
-// basic markdown parser for top-level headings
 function parseMarkdown(input, mapCallback) {
     const lines = input.split(newlines);
     let results = [];
@@ -41,12 +39,13 @@ function parseMarkdown(input, mapCallback) {
         if (line.startsWith('```')) {
             insideCodeBlock = !insideCodeBlock;
         }
-        // start a new data region
+        // check for new regions
         if (line.startsWith('# ') && !insideCodeBlock) {
-            results.push({
+            const data = {
                 heading: line.slice(2),
                 content: ''
-            });
+            };
+            results.push(data);
         }
         else if (results.length) {
             let current = results.at(-1);

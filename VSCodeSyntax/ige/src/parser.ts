@@ -41,11 +41,12 @@ export function parseRegions(input: string): Record<string, string> {
 
 
 // basic markdown parser for top-level headings
+interface MarkdownData {
+  heading: string
+  content: string
+}
 
-export function parseMarkdown(
-  input: string,
-  mapCallback?: (data) => any
-) {
+export function parseMarkdown(input: string, mapCallback?: (data: MarkdownData) => any) {
   const lines = input.split(newlines)
   let results = []
   let insideCodeBlock = false
@@ -55,12 +56,13 @@ export function parseMarkdown(
       insideCodeBlock = !insideCodeBlock
     }
 
-    // start a new data region
+    // check for new regions
     if (line.startsWith('# ') && !insideCodeBlock) {
-      results.push({
+      const data: MarkdownData = {
         heading: line.slice(2),
         content: ''
-      })
+      }
+      results.push(data)
     }
 
     else if (results.length) {
@@ -70,6 +72,5 @@ export function parseMarkdown(
   }
 
   if(mapCallback) results = results.map(mapCallback)
-
   return results
 }

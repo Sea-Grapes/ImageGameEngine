@@ -2,7 +2,9 @@ import { CompletionItem, CompletionItemKind, InsertTextFormat, MarkupKind, Signa
 import { parseMarkdown, parseRegions } from "./parser"
 import { read } from './utils'
 
-const functions = parseMarkdown(read('data/functions.md'))
+const functions = parseMarkdown(read('data/functions.md'), data => {
+  
+})
 const snippets = parseRegions(read('data/snippets.ige'))
 
 // command for triggering signature help
