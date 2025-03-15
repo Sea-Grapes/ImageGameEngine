@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseRegions = parseRegions;
-exports.parseMarkdown = parseMarkdown;
 const newlines = /\r?\n/;
 const wordRegex = /\w+/;
 // parse #region and #endregion
@@ -37,29 +36,21 @@ function parseMarkdown(input) {
     const lines = input.split(newlines);
     const results = [];
     let insideCodeBlock = false;
-    let currentData = null;
-    for (let line of lines) {
+    for (const line of lines) {
         if (line.startsWith('```')) {
             insideCodeBlock = !insideCodeBlock;
         }
+        // start a new data region
         if (line.startsWith('# ') && !insideCodeBlock) {
-            // if there is data already, save it
-            if (currentData) {
-                currentData.content = currentData.content.join('\n');
-                results.push(currentData);
-            }
-            currentData = {
+            results.push({
                 heading: line.slice(2),
-                content: []
-            };
+                content: ''
+            });
         }
-        else if (currentData) {
-            currentData.content.push(line);
+        else if (results.length) {
+            let current = results.at(-1);
+            current.content += (current.content.length ? '\n' : '') + line;
         }
-    }
-    if (currentData) {
-        currentData.content = currentData.content.join('\n');
-        results.push(currentData);
     }
     return results;
 }

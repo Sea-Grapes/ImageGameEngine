@@ -35,3 +35,8 @@ Consider making funcData -> [CompletionItem, SignatureHelp] to get both datas
 
 I think I want functions to auto generate from markdown.
 Additional configuration (ex. snippets) can be added somewhere
+
+
+# parsing markdown
+
+instead of doing array just add to content, remove extra newline by checking content.length
