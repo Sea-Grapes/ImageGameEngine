@@ -24,7 +24,7 @@ const completionData: CompletionItem[] = [
     label: 'FILL|',
     kind: CompletionItemKind.Function,
     detail: '(util) FILL',
-    command: signatureHelpCommand
+    command: signatureHelpCommand,
   }
 ]
 

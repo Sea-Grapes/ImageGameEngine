@@ -22,7 +22,7 @@ const completionData = [
         label: 'FILL|',
         kind: node_1.CompletionItemKind.Function,
         detail: '(util) FILL',
-        command: signatureHelpCommand
+        command: signatureHelpCommand,
     }
 ];
 exports.completionData = completionData;
