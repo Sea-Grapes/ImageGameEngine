@@ -33,6 +33,7 @@ ws.onInitialize((): InitializeResult => {
 })
 
 
+
 ws.onCompletion((params: CompletionParams): CompletionItem[] => {
 
   const doc = documents.get(params.textDocument.uri)
@@ -79,7 +80,7 @@ ws.onSignatureHelp((params: SignatureHelpParams): SignatureHelp => {
     }
   })
 
-  console.log(tokens)
+  // console.log(tokens)
 
   // if we're in first token, quit
   const currentTokenIndex = tokens.findIndex(token => position.character >= token.start && position.character <= token.end)
@@ -102,6 +103,11 @@ ws.onSignatureHelp((params: SignatureHelpParams): SignatureHelp => {
     activeParameter: currentParameterIndex,
     signatures: currentData
   }
+})
+
+
+documents.onDidChangeContent(data => {
+  console.log(data)
 })
 
 documents.listen(ws)
