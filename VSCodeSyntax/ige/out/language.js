@@ -58,7 +58,7 @@ const wordRegex = /\w+/;
     let trigger = wordRegex.exec(heading)?.[0];
     if (!trigger)
         return;
-    let title = (0, utils_1.cutString)(heading, ' ')[1];
+    let title = (0, utils_1.splitStr)(heading, ' ')[1];
     const res = {
         label: trigger,
         kind: node_1.CompletionItemKind.Function,

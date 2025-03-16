@@ -1,6 +1,6 @@
 import { CompletionItem, CompletionItemKind, InsertTextFormat, MarkupKind, SignatureInformation } from 'vscode-languageserver/node'
 import { parseMarkdown, parseRegions } from "./parser"
-import { cutString, read } from './utils'
+import { splitStr, read } from './utils'
 
 
 const snippets = parseRegions(read('data/snippets.ige'))
@@ -61,7 +61,7 @@ parseMarkdown(read('data/functions.md'), ({ heading, content }) => {
   let trigger = wordRegex.exec(heading)?.[0]
   if(!trigger) return
 
-  let title = cutString(heading, ' ')[1]
+  let title = splitStr(heading, ' ')[1]
   
   const res: CompletionItem = {
     label: trigger,

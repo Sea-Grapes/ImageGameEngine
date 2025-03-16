@@ -36,8 +36,6 @@ export function parseRegions(input: string): Record<string, string> {
 
 }
 
-// key = wordRegex.exec(line)?.[0]
-
 
 // basic markdown parser for top-level headings
 interface MarkdownData {
