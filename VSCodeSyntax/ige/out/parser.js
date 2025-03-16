@@ -5,30 +5,24 @@ exports.parseMarkdown = parseMarkdown;
 const newlines = /\r?\n/;
 // parse #region and #endregion
 function parseRegions(input) {
-    const lines = input.split(/\r?\n/);
-    const regions = {};
-    let activeRegion = null;
+    const lines = input.split(newlines);
+    const results = {};
+    let key = null;
     for (const line of lines) {
         if (line.startsWith('#region')) {
-            if (activeRegion)
-                regions[activeRegion.name] = activeRegion.lines.join('\n').trim();
-            activeRegion = {
-                name: line.replace('#region', '').match(/\w+/)[0].trim(),
-                lines: []
-            };
+            if (key)
+                results[key] = results[key].trim();
+            key = line.replace('#region', '').match(/\w+/)[0].trim();
+            results[key] = '';
         }
-        else if (line.startsWith('#endregion') && activeRegion) {
-            regions[activeRegion.name] = activeRegion.lines.join('\n');
-            activeRegion = null;
+        else if (line.startsWith('#endregion') && key) {
+            key = null;
         }
-        else if (activeRegion) {
-            activeRegion.lines.push(line);
+        else if (key) {
+            results[key] += (results[key].length ? '\n' : '') + line;
         }
     }
-    if (activeRegion) {
-        regions[activeRegion.name] = activeRegion.lines.join('\n').trim();
-    }
-    return regions;
+    return results;
 }
 function parseMarkdown(input, mapCallback) {
     const lines = input.split(newlines);
