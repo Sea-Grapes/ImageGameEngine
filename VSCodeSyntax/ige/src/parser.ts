@@ -2,26 +2,23 @@ const newlines = /\r?\n/
 
 // parse #region and #endregion
 export function parseRegions(input: string): Record<string, string> {
-
   const lines = input.split(newlines)
   const results = {}
   let key = null
 
   for(const line of lines) {
     if(line.startsWith('#region')) {
-      if(key) results[key] = results[key].trim()
-      key = line.replace('#region', '').match(/\w+/)[0].trim()
-      results[key] = ''
+      if(key) results[key] = results[key].join('\n').trim()
+      key = line.replace('#region', '').match(/\w+/)?.[0].trim()
+      if(key) results[key] = []
     }
 
     else if(line.startsWith('#endregion') && key) {
+      results[key] = results[key].join('\n')
       key = null
     }
 
-    else if(key) {
-      results[key] += (results[key].length? '\n': '') + line
-    }
-    
+    else if(key) results[key].push(line)
   }
 
   return results
